@@ -68,7 +68,3 @@ bash tests/test_desktop_shell.sh
 bash tests/test_glass_effects.sh
 bash tests/test_bootstrap.sh
 ```
-
-## 发布到 GitHub
-
-本仓库没有替你绑定远程地址。你在 GitHub 建好空仓库后，再自行添加 `origin` 并推送当前分支即可；推送前建议先运行上面的测试。
