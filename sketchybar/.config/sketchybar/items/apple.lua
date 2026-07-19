@@ -1,36 +1,32 @@
 local colors = require("colors")
-local icons = require("icons")
 local settings = require("settings")
 
--- Padding item required because of bracket
-sbar.add("item", { width = 5 })
-
-local apple = sbar.add("item", {
+sbar.add("item", "apple.yuttfu", {
+  position = "left",
   icon = {
-    font = { size = 16.0 },
-    string = icons.apple,
-    padding_right = 8,
-    padding_left = 8,
+    string = "",
+    color = colors.lavender,
+    font = { family = settings.font.text, style = "Bold", size = 15.0 },
+    padding_left = 7,
+    padding_right = 3,
   },
+  label = {
+    string = settings.identity,
+    color = colors.text,
+    padding_left = 3,
+    padding_right = 7,
+  },
+  background = {
+    color = colors.surface0,
+    border_color = colors.with_alpha(colors.lavender, 0.55),
+  },
+  click_script = "open -a 'System Settings'",
+})
+
+sbar.add("item", "apple.yuttfu.gap", {
+  position = "left",
+  width = settings.item.group_gap,
+  icon = { drawing = false },
   label = { drawing = false },
-  background = {
-    color = colors.bg2,
-    border_color = colors.black,
-    border_width = 1
-  },
-  padding_left = 1,
-  padding_right = 1,
-  click_script = "$CONFIG_DIR/helpers/menus/bin/menus -s 0"
+  background = { drawing = false },
 })
-
--- Double border for apple using a single item bracket
-sbar.add("bracket", { apple.name }, {
-  background = {
-    color = colors.transparent,
-    height = 30,
-    border_color = colors.grey,
-  }
-})
-
--- Padding item required because of bracket
-sbar.add("item", { width = 7 })

@@ -1,52 +1,44 @@
-local settings = require("settings")
 local colors = require("colors")
+local settings = require("settings")
 
--- Equivalent to the --default domain
 sbar.default({
   updates = "when_shown",
+  padding_left = 3,
+  padding_right = 3,
   icon = {
+    color = colors.text,
     font = {
-      family = settings.font.text,
-      style = settings.font.style_map["Bold"],
-      size = 14.0
+      family = settings.font.mono,
+      style = "Semibold",
+      size = 13.0,
     },
-    color = colors.white,
-    padding_left = settings.paddings,
-    padding_right = settings.paddings,
-    background = { image = { corner_radius = 9 } },
+    padding_left = settings.item.padding,
+    padding_right = settings.item.padding,
   },
   label = {
+    color = colors.text,
     font = {
       family = settings.font.text,
-      style = settings.font.style_map["Semibold"],
-      size = 13.0
+      style = "Semibold",
+      size = 12.0,
     },
-    color = colors.white,
-    padding_left = settings.paddings,
-    padding_right = settings.paddings,
+    padding_left = settings.item.padding,
+    padding_right = settings.item.padding,
   },
   background = {
-    height = 28,
-    corner_radius = 9,
-    border_width = 2,
-    border_color = colors.bg2,
-    image = {
-      corner_radius = 9,
-      border_color = colors.grey,
-      border_width = 1
-    }
+    color = colors.surface0,
+    height = settings.item.height,
+    corner_radius = settings.item.corner_radius,
+    border_width = 1,
+    border_color = colors.surface1,
   },
   popup = {
     background = {
-      border_width = 2,
-      corner_radius = 9,
-      border_color = colors.popup.border,
-      color = colors.popup.bg,
-      shadow = { drawing = true },
+      color = colors.with_alpha(colors.mantle, 0.96),
+      corner_radius = 12,
+      border_width = 1,
+      border_color = colors.surface1,
     },
-    blur_radius = 50,
+    blur_radius = 20,
   },
-  padding_left = 5,
-  padding_right = 5,
-  scroll_texts = true,
 })
