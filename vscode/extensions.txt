@@ -1,1 +1,2 @@
 illixion.vscode-vibrancy-continued
+Catppuccin.catppuccin-vsc

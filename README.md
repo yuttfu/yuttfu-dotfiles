@@ -57,7 +57,7 @@ codex-awake --minutes 180
 
 ## Ghostty 与 Visual Studio Code 透明效果
 
-Ghostty 的主题、字体和透明度由仓库中的配置直接控制。Visual Studio Code 的设置文件会被链接，扩展清单会在 `./bootstrap.sh --apply` 时恢复。
+Ghostty 的主题、字体和透明度由仓库中的配置直接控制。Visual Studio Code 使用与 Ghostty 一致的 Catppuccin Mocha（Mauve 强调色与 minimal 工作台），设置文件会被链接，扩展清单会在 `./bootstrap.sh --apply` 时恢复。
 
 由于它会改动 VS Code 的应用资源，玻璃效果必须在 VS Code 内手动确认：安装完成后打开命令面板，运行 **Vibrancy Continued: Enable Vibrancy**。VS Code 更新后若效果失效，再运行 **Vibrancy Continued: Reload Vibrancy**。这是刻意保留的显式操作，避免迁移脚本静默修改应用包。
 

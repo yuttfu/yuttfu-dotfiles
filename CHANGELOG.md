@@ -15,6 +15,7 @@
 
 - AeroSpace 的终端规则改为 Ghostty，窗口位置与当前日常终端一致。
 - 根目录忽略未整理的 Neovim、Yazi、WezTerm 和备用 AeroSpace 配置，避免它们意外进入发布内容。
+- VS Code 改用 Catppuccin Mocha 与 Mauve 强调色，移除手写的深玫瑰覆盖，同时保留 macOS 透明效果。
 
 ### Intentionally not included
 
