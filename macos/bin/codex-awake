@@ -1,0 +1,62 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+usage() {
+  printf 'Usage: %s [--minutes N] [--display] [--dry-run]\n' "${0##*/}"
+}
+
+minutes=180
+keep_display=0
+dry_run=0
+
+while [[ "$#" -gt 0 ]]; do
+  case "$1" in
+    --minutes)
+      if [[ "$#" -lt 2 ]]; then
+        usage >&2
+        exit 2
+      fi
+      minutes="$2"
+      shift
+      ;;
+    --display)
+      keep_display=1
+      ;;
+    --dry-run)
+      dry_run=1
+      ;;
+    --help|-h)
+      usage
+      exit 0
+      ;;
+    *)
+      usage >&2
+      exit 2
+      ;;
+  esac
+  shift
+done
+
+if [[ ! "$minutes" =~ ^[1-9][0-9]*$ ]]; then
+  printf 'Duration must be a positive number of minutes.\n' >&2
+  exit 2
+fi
+
+seconds=$((minutes * 60))
+flags=(-i)
+if [[ "$keep_display" -eq 1 ]]; then
+  flags=(-d -i)
+fi
+
+command=(/usr/bin/caffeinate "${flags[@]}" -t "$seconds")
+
+if [[ "$dry_run" -eq 1 ]]; then
+  printf 'DRY RUN:'
+  printf ' %s' "${command[@]}"
+  printf '\n'
+  exit 0
+fi
+
+printf 'Keeping this Mac awake for %s minutes. Press Ctrl-C to stop early.\n' "$minutes"
+exec "${command[@]}"

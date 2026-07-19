@@ -1,0 +1,17 @@
+tap "felixkratz/formulae"
+tap "nikitabobko/tap"
+
+brew "stow"
+brew "lua"
+brew "ripgrep"
+brew "jq"
+brew "felixkratz/formulae/sketchybar"
+brew "felixkratz/formulae/borders"
+
+cask "nikitabobko/tap/aerospace"
+cask "ghostty"
+cask "visual-studio-code"
+cask "font-meslo-lg-nerd-font"
+cask "font-jetbrains-mono-nerd-font"
+cask "font-sketchybar-app-font"
+cask "font-sf-pro"
