@@ -1,0 +1,14 @@
+# Theme and typography
+theme = Catppuccin Mocha
+font-family = MesloLGS NF
+font-size = 14
+
+# Window spacing
+window-padding-x = 12
+window-padding-y = 8
+
+# Native macOS glass
+background-opacity = 0.88
+background-opacity-cells = true
+background-blur = macos-glass-regular
+macos-titlebar-style = transparent
