@@ -23,12 +23,20 @@ local function state_label()
 end
 
 local focus_timer = sbar.add("item", "focus_timer", {
-  position = "right",
+  position = "e",
   update_freq = 1,
+  width = 26,
   icon = { string = "󰔟", color = colors.overlay0 },
-  label = { string = "00m" },
+  label = { drawing = false },
+  background = {
+    color = colors.with_alpha(colors.overlay0, 0.22),
+    height = 26,
+    corner_radius = 13,
+    border_width = 1,
+    border_color = colors.overlay0,
+  },
   popup = {
-    align = "right",
+    align = "center",
     drawing = false,
     background = {
       color = colors.with_alpha(colors.mantle, 0.96),
@@ -101,16 +109,16 @@ end
 local function refresh()
   local name, icon, color = state_label()
   local expanded = hovered
-  local label = expanded and string.format("%s · %s", name, timer.precise(state, now()))
-    or timer.compact(state, now())
 
   focus_timer:set({
     icon = { string = icon, color = color },
-    label = { string = label },
-    width = expanded and 132 or 64,
+    width = expanded and 32 or 26,
     background = {
-      color = colors.with_alpha(colors.surface0, expanded and 0.98 or 0.88),
+      color = colors.with_alpha(color, expanded and 0.32 or 0.22),
       border_color = color,
+      border_width = expanded and 2 or 1,
+      height = expanded and 32 or 26,
+      corner_radius = expanded and 16 or 13,
     },
     popup = { drawing = popup_visible },
   })
