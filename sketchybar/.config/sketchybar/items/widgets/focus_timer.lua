@@ -6,6 +6,7 @@ local state = timer.normalize(nil)
 local hovered = false
 local popup_visible = false
 local state_path = "$HOME/Library/Application Support/yuttfu-sketchybar/study-timer.json"
+local popup_width = 152
 
 local function now()
   return os.time()
@@ -23,20 +24,13 @@ local function state_label()
 end
 
 local focus_timer = sbar.add("item", "focus_timer", {
-  position = "e",
+  position = "right",
   update_freq = 1,
-  width = 26,
+  width = 64,
   icon = { string = "󰔟", color = colors.overlay0 },
-  label = { drawing = false },
-  background = {
-    color = colors.with_alpha(colors.overlay0, 0.22),
-    height = 26,
-    corner_radius = 13,
-    border_width = 1,
-    border_color = colors.overlay0,
-  },
+  label = { string = "00m" },
   popup = {
-    align = "center",
+    align = "right",
     drawing = false,
     background = {
       color = colors.with_alpha(colors.mantle, 0.96),
@@ -49,9 +43,12 @@ local focus_timer = sbar.add("item", "focus_timer", {
 
 local popup_status = sbar.add("item", "focus_timer.status", {
   position = "popup.focus_timer",
+  width = popup_width,
   icon = { drawing = false },
   label = {
     string = "未开始",
+    width = popup_width,
+    align = "center",
     font = { family = settings.font.text, style = "Semibold", size = 12.0 },
   },
   background = { drawing = false },
@@ -59,9 +56,12 @@ local popup_status = sbar.add("item", "focus_timer.status", {
 
 local popup_readout = sbar.add("item", "focus_timer.readout", {
   position = "popup.focus_timer",
+  width = popup_width,
   icon = { drawing = false },
   label = {
     string = "00:00:00",
+    width = popup_width,
+    align = "center",
     font = { family = settings.font.mono, style = "Bold", size = 30.0 },
   },
   background = { drawing = false },
@@ -69,21 +69,24 @@ local popup_readout = sbar.add("item", "focus_timer.readout", {
 
 local start_control = sbar.add("item", "focus_timer.start", {
   position = "popup.focus_timer",
-  icon = { string = "󰐊", color = colors.green },
-  label = { string = "开始" },
+  width = popup_width,
+  icon = { drawing = false },
+  label = { string = "开始", width = popup_width, align = "center" },
 })
 
 local pause_control = sbar.add("item", "focus_timer.pause", {
   position = "popup.focus_timer",
-  icon = { string = "󰏤", color = colors.peach },
-  label = { string = "暂停" },
+  width = popup_width,
+  icon = { drawing = false },
+  label = { string = "暂停", width = popup_width, align = "center" },
   drawing = false,
 })
 
 local reset_control = sbar.add("item", "focus_timer.reset", {
   position = "popup.focus_timer",
-  icon = { string = "󰑓", color = colors.subtext0 },
-  label = { string = "复位" },
+  width = popup_width,
+  icon = { drawing = false },
+  label = { string = "复位", width = popup_width, align = "center" },
 })
 
 local function encode_state(snapshot)
@@ -109,16 +112,19 @@ end
 local function refresh()
   local name, icon, color = state_label()
   local expanded = hovered
+  local label = expanded and string.format("%s · %s", name, timer.precise(state, now()))
+    or timer.compact(state, now())
 
   focus_timer:set({
     icon = { string = icon, color = color },
-    width = expanded and 32 or 26,
+    label = { string = label },
+    width = expanded and 132 or 64,
     background = {
-      color = colors.with_alpha(color, expanded and 0.32 or 0.22),
+      color = colors.with_alpha(colors.surface0, expanded and 0.98 or 0.88),
       border_color = color,
-      border_width = expanded and 2 or 1,
-      height = expanded and 32 or 26,
-      corner_radius = expanded and 16 or 13,
+      border_width = 1,
+      height = settings.item.height,
+      corner_radius = settings.item.corner_radius,
     },
     popup = { drawing = popup_visible },
   })

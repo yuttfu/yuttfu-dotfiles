@@ -17,7 +17,7 @@
 - AeroSpace 的终端规则改为 Ghostty，窗口位置与当前日常终端一致。
 - 根目录忽略未整理的 Neovim、Yazi、WezTerm 和备用 AeroSpace 配置，避免它们意外进入发布内容。
 - VS Code 改用 Catppuccin Mocha 与 Mauve 强调色，移除手写的深玫瑰覆盖，同时保留 macOS 透明效果。
-- 专注信标移至刘海右侧并改为圆形状态按钮；精确时间与控制项保留在居中 popup 内。
+- 专注信标恢复为电量左侧的图标与分钟显示；popup 内的开始/暂停和复位改为纵向同宽、文字居中。
 
 ### Intentionally not included
 
