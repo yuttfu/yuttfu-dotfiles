@@ -27,6 +27,26 @@
 
 4. 首次启动 AeroSpace、SketchyBar 和 JankyBorders 时，按 macOS 的提示授予所需权限；AeroSpace 通常需要辅助功能权限。
 
+## SketchyBar 音乐岛
+
+音乐岛位于 SketchyBar 中间：新歌会展开 5 秒，悬停时显示歌手，点击后打开带进度、播放控制和最近 6 首记录的原生面板。QQ音乐是完整适配目标；网易云音乐使用系统媒体信息，属于尽力而为支持。
+
+`./bootstrap.sh --apply` 会构建 `$HOME/Applications/yuttfu Media Helper.app` 并安装登录启动项。第一次安装后可以直接启动：
+
+```bash
+open -g "$HOME/Applications/yuttfu Media Helper.app"
+```
+
+随后在“系统设置 → 隐私与安全性 → 辅助功能”中允许 **yuttfu Media Helper**。这项权限只用于读取 QQ音乐的播放状态、操作上一首/播放/下一首、拖动进度，以及按歌名与歌手定位历史歌曲；不会写入 QQ音乐的数据文件，也不会使用固定屏幕坐标。
+
+修改 helper 后可单独重建：
+
+```bash
+bash macos/yuttfu-media-helper/build-app.sh "$HOME/Applications/yuttfu Media Helper.app"
+```
+
+运行时只会在 `$HOME/.cache/yuttfu-sketchybar/` 保存最近 6 首记录和 QQ音乐封面缓存，这些内容不会进入 Git。若 QQ音乐升级后控制失效，先确认辅助功能权限仍然开启，再运行下面的核心测试并检查 `PlayingList.archive` 字段或辅助功能元素是否变化。
+
 ## 防止 Codex 工作时过快睡眠
 
 下面的电源档位已经按这台 Mac 的使用方式设计：接电时关闭系统自动睡眠但保留 30 分钟熄屏；电池时 10 分钟熄屏、15 分钟睡眠。先查看当前值：
@@ -67,4 +87,5 @@ Ghostty 的主题、字体和透明度由仓库中的配置直接控制。Visual
 bash tests/test_desktop_shell.sh
 bash tests/test_glass_effects.sh
 bash tests/test_bootstrap.sh
+bash macos/yuttfu-media-helper/test-core.sh
 ```
