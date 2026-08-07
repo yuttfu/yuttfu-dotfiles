@@ -42,6 +42,10 @@ outer.bottom = 12
 # Alt + , (逗号) 切换平铺与手风琴模式
 alt-comma = 'layout accordion tiles'
 
+# 【录制专注模式】
+# Alt + R 全屏当前窗口并临时移除外边距；再次按下恢复原布局
+alt-r = 'fullscreen --no-outer-gaps'
+
 # 【窗口导航：Vim 习惯】
 alt-h = 'focus left'
 alt-j = 'focus down'

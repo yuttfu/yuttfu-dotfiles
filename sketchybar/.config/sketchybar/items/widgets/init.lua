@@ -1,4 +1,7 @@
+require("items.widgets.clock")
 require("items.widgets.volume")
 require("items.widgets.network")
 require("items.widgets.battery")
 require("items.widgets.focus_timer")
+require("items.widgets.system_metrics")
+require("items.widgets.recording")
