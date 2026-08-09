@@ -27,6 +27,22 @@
 
 4. 首次启动 AeroSpace、SketchyBar 和 JankyBorders 时，按 macOS 的提示授予所需权限；AeroSpace 通常需要辅助功能权限。
 
+## SketchyBar 学习仪表台
+
+右侧状态区以学习计时为主：`FOCUS HH:MM:SS` 始终保持固定宽度，点击后可以开始、暂停和复位；CPU 与 RAM 分开显示百分比和短曲线；日期与等宽时钟组成一个安静的时间组。刘海屏布局不会加载中间音乐岛，避免组件被摄像头区域遮挡。
+
+点击日期会打开无 Dock 图标的本地月历。月历提供固定 7×6 日期网格，可以使用 ACM、AI、课程/考试、个人四种分类给日期加色点和简短备注。它不调用 Apple Calendar，也不请求日历权限；数据只保存在：
+
+```text
+$HOME/Library/Application Support/yuttfu-sketchybar/calendar-marks.json
+```
+
+完整的 `./bootstrap.sh --apply` 会构建并安装 `$HOME/Applications/yuttfu Calendar.app`；`--links-only` 不会触发 Swift 构建。修改日历源码后也可以单独重建：
+
+```bash
+bash macos/yuttfu-calendar-panel/build-app.sh "$HOME/Applications/yuttfu Calendar.app"
+```
+
 ## SketchyBar 音乐岛
 
 音乐岛位于 SketchyBar 中间：新歌会展开 5 秒，悬停时显示歌手，点击后打开带进度、播放控制和最近 6 首记录的原生面板。QQ音乐是完整适配目标；网易云音乐使用系统媒体信息，属于尽力而为支持。
@@ -85,7 +101,10 @@ Ghostty 的主题、字体和透明度由仓库中的配置直接控制。Visual
 
 ```bash
 bash tests/test_desktop_shell.sh
+bash tests/test_status_widgets.sh
+bash tests/test_calendar_panel.sh
 bash tests/test_glass_effects.sh
 bash tests/test_bootstrap.sh
+bash macos/yuttfu-calendar-panel/test-core.sh
 bash macos/yuttfu-media-helper/test-core.sh
 ```

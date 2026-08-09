@@ -80,4 +80,19 @@ function focus_timer_state.precise(snapshot, now)
   return string.format("%02d:%02d:%02d", hours, minutes, seconds % 60)
 end
 
+function focus_timer_state.status(snapshot, now)
+  snapshot = focus_timer_state.normalize(snapshot)
+  if snapshot.running then
+    return "running"
+  end
+  if focus_timer_state.elapsed(snapshot, now) > 0 then
+    return "paused"
+  end
+  return "idle"
+end
+
+function focus_timer_state.dashboard(snapshot, now)
+  return "FOCUS " .. focus_timer_state.precise(snapshot, now)
+end
+
 return focus_timer_state

@@ -9,6 +9,7 @@ PACKAGES=(aerospace borders ghostty sketchybar vscode)
 CODEX_AWAKE_SOURCE="$ROOT/macos/bin/codex-awake"
 MEDIA_HELPER_BUILD="$ROOT/macos/yuttfu-media-helper/build-app.sh"
 MEDIA_HELPER_AGENT_TEMPLATE="$ROOT/macos/LaunchAgents/com.yuttfu.sketchybar-media.plist.in"
+CALENDAR_PANEL_BUILD="$ROOT/macos/yuttfu-calendar-panel/build-app.sh"
 failures=0
 
 check_ok() {
@@ -142,6 +143,13 @@ install_media_helper() {
   printf 'APPLY OK: yuttfu Media Helper installed\n'
 }
 
+install_calendar_panel() {
+  local app_target="$HOME/Applications/yuttfu Calendar.app"
+
+  "$CALENDAR_PANEL_BUILD" "$app_target" || return 1
+  printf 'APPLY OK: yuttfu Calendar installed\n'
+}
+
 apply_links() {
   if ! run_checks; then
     return 1
@@ -207,6 +215,7 @@ apply_all() {
 
   if [[ "$links_only" -eq 0 ]]; then
     install_media_helper || return 1
+    install_calendar_panel || return 1
     restore_vscode_extensions
   fi
 }
