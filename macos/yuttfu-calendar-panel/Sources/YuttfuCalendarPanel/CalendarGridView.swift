@@ -51,7 +51,7 @@ final class CalendarGridView: NSView {
         month: Int,
         today: Date,
         selectedDate: Date,
-        marks: [String: CalendarMark]
+        eventDateKeys: Set<String>
     ) {
         let cells = MonthGrid.make(
             year: year,
@@ -67,7 +67,7 @@ final class CalendarGridView: NSView {
                 isInDisplayedMonth: cell.isInDisplayedMonth,
                 isToday: cell.isToday,
                 isSelected: calendar.isDate(cell.date, inSameDayAs: selectedDate),
-                markColor: marks[Self.dateKey(cell.date, calendar: calendar)].map { Theme.color(for: $0.category) }
+                markColor: eventDateKeys.contains(Self.dateKey(cell.date, calendar: calendar)) ? Theme.red : nil
             )
         }
     }

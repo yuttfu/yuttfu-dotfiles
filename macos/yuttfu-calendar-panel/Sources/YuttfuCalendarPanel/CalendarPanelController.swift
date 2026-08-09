@@ -7,25 +7,17 @@ private final class CalendarPanel: NSPanel {
 }
 
 @MainActor
-final class CalendarPanelController: NSObject, NSTextFieldDelegate {
+final class CalendarPanelController: NSObject {
     private let panel: CalendarPanel
     private let store: CalendarMarkStore
     private var calendar: Calendar
-    private var document = CalendarMarkDocument()
+    private var document = CalendarEventDocument()
     private var displayedDate: Date
     private var selectedDate: Date
 
     private let monthLabel = NSTextField(labelWithString: "")
-    private let selectedDateLabel = NSTextField(labelWithString: "")
-    private let noteField = NSTextField(string: "")
-    private let feedbackLabel = NSTextField(labelWithString: "")
-    private let categoryControl = NSSegmentedControl(
-        labels: CalendarCategory.allCases.map(\.displayName),
-        trackingMode: .selectOne,
-        target: nil,
-        action: nil
-    )
     private let grid: CalendarGridView
+    private let eventOverlay = CalendarEventOverlayView()
     private var localMonitor: Any?
     private var globalMonitor: Any?
 
@@ -44,7 +36,7 @@ final class CalendarPanelController: NSObject, NSTextFieldDelegate {
         selectedDate = today
         grid = CalendarGridView(calendar: calendar)
         panel = CalendarPanel(
-            contentRect: NSRect(x: 0, y: 0, width: 276, height: 390),
+            contentRect: NSRect(x: 0, y: 0, width: 276, height: 300),
             styleMask: [.borderless, .nonactivatingPanel],
             backing: .buffered,
             defer: false
@@ -62,6 +54,7 @@ final class CalendarPanelController: NSObject, NSTextFieldDelegate {
             return
         }
 
+        eventOverlay.hide()
         reloadDocument()
         positionPanel(anchor: anchor)
         panel.orderFrontRegardless()
@@ -147,56 +140,31 @@ final class CalendarPanelController: NSObject, NSTextFieldDelegate {
         ])
         root.addArrangedSubview(grid)
 
-        let divider = NSBox()
-        divider.boxType = .separator
-        divider.widthAnchor.constraint(equalToConstant: 238).isActive = true
-        root.addArrangedSubview(divider)
-
-        selectedDateLabel.textColor = Theme.subtext
-        selectedDateLabel.font = .systemFont(ofSize: 11, weight: .semibold)
-        selectedDateLabel.alignment = .left
-        selectedDateLabel.widthAnchor.constraint(equalToConstant: 238).isActive = true
-        root.addArrangedSubview(selectedDateLabel)
-
-        categoryControl.target = self
-        categoryControl.action = #selector(categoryChanged)
-        categoryControl.selectedSegment = 0
-        categoryControl.segmentStyle = .rounded
-        categoryControl.widthAnchor.constraint(equalToConstant: 238).isActive = true
-        root.addArrangedSubview(categoryControl)
-
-        noteField.placeholderString = "写一句备注"
-        noteField.delegate = self
-        noteField.textColor = Theme.text
-        noteField.font = .systemFont(ofSize: 11)
-        noteField.backgroundColor = Theme.surface.withAlphaComponent(0.7)
-        noteField.isBezeled = true
-        noteField.bezelStyle = .roundedBezel
-        noteField.focusRingType = .none
-        noteField.widthAnchor.constraint(equalToConstant: 238).isActive = true
-        root.addArrangedSubview(noteField)
-
-        let clear = actionButton("清除", color: Theme.subtext, action: #selector(clearMark))
-        let save = actionButton("保存标记", color: Theme.lavender, action: #selector(saveMark))
-        let actions = NSStackView(views: [clear, save])
-        actions.orientation = .horizontal
-        actions.alignment = .centerY
-        actions.spacing = 12
-        root.addArrangedSubview(actions)
-
-        feedbackLabel.textColor = Theme.red
-        feedbackLabel.font = .systemFont(ofSize: 10, weight: .medium)
-        feedbackLabel.alignment = .center
-        feedbackLabel.isHidden = true
-        root.addArrangedSubview(feedbackLabel)
+        eventOverlay.translatesAutoresizingMaskIntoConstraints = false
+        visual.addSubview(eventOverlay)
+        NSLayoutConstraint.activate([
+            eventOverlay.leadingAnchor.constraint(equalTo: visual.leadingAnchor, constant: 18),
+            eventOverlay.trailingAnchor.constraint(equalTo: visual.trailingAnchor, constant: -18),
+            eventOverlay.topAnchor.constraint(equalTo: visual.topAnchor, constant: 14),
+            eventOverlay.bottomAnchor.constraint(equalTo: visual.bottomAnchor, constant: -14),
+        ])
     }
 
     private func wireInteractions() {
         grid.onSelect = { [weak self] date in
-            self?.select(date, beginEditing: false)
+            self?.select(date)
         }
         grid.onEdit = { [weak self] date in
-            self?.select(date, beginEditing: true)
+            self?.select(date)
+        }
+        eventOverlay.onClose = { [weak self] in
+            self?.eventOverlay.hide()
+        }
+        eventOverlay.onAdd = { [weak self] time, title in
+            self?.addEvent(time: time, title: title)
+        }
+        eventOverlay.onDelete = { [weak self] eventID in
+            self?.deleteEvent(eventID)
         }
     }
 
@@ -225,53 +193,96 @@ final class CalendarPanelController: NSObject, NSTextFieldDelegate {
     private func reloadDocument() {
         do {
             document = try store.load()
-            feedbackLabel.isHidden = true
         } catch {
-            document = CalendarMarkDocument()
-            showError("无法读取本地标记")
+            document = CalendarEventDocument()
         }
-        refresh()
+        refreshGrid()
     }
 
-    private func refresh() {
+    private func refreshGrid() {
         let displayed = calendar.dateComponents([.year, .month], from: displayedDate)
-        let selected = calendar.dateComponents([.month, .day, .weekday], from: selectedDate)
         let year = displayed.year ?? 0
         let month = displayed.month ?? 0
-        let weekdayNames = ["周日", "周一", "周二", "周三", "周四", "周五", "周六"]
-
         monthLabel.stringValue = "\(year)年 \(month)月"
-        selectedDateLabel.stringValue = String(
-            format: "%@  %02d月%02d日",
-            weekdayNames[max(0, min(6, (selected.weekday ?? 1) - 1))],
-            selected.month ?? 0,
-            selected.day ?? 0
-        )
 
-        let key = CalendarGridView.dateKey(selectedDate, calendar: calendar)
-        let mark = document.marks[key]
-        if let mark, let index = CalendarCategory.allCases.firstIndex(of: mark.category) {
-            categoryControl.selectedSegment = index
-            noteField.stringValue = mark.note
-        } else {
-            categoryControl.selectedSegment = 0
-            noteField.stringValue = ""
-        }
-
+        let eventDateKeys = Set(document.events.compactMap { key, events in
+            events.isEmpty ? nil : key
+        })
         grid.update(
             year: year,
             month: month,
             today: Date(),
             selectedDate: selectedDate,
-            marks: document.marks
+            eventDateKeys: eventDateKeys
         )
     }
 
-    private func select(_ date: Date, beginEditing: Bool) {
+    private func select(_ date: Date) {
         selectedDate = calendar.startOfDay(for: date)
-        refresh()
-        if beginEditing {
-            panel.makeFirstResponder(noteField)
+        refreshGrid()
+        refreshOverlay()
+    }
+
+    private func refreshOverlay() {
+        let key = CalendarGridView.dateKey(selectedDate, calendar: calendar)
+        eventOverlay.show(
+            dateTitle: selectedDateTitle(),
+            events: document.events(on: key)
+        )
+    }
+
+    private func selectedDateTitle() -> String {
+        let components = calendar.dateComponents([.month, .day, .weekday], from: selectedDate)
+        let weekdayNames = ["周日", "周一", "周二", "周三", "周四", "周五", "周六"]
+        let weekday = weekdayNames[max(0, min(6, (components.weekday ?? 1) - 1))]
+        return String(
+            format: "%@ · %d月%d日",
+            weekday,
+            components.month ?? 0,
+            components.day ?? 0
+        )
+    }
+
+    private func addEvent(time: String?, title: String) {
+        let event: CalendarEvent
+        do {
+            event = try CalendarEvent(time: time, title: title)
+        } catch CalendarEvent.ValidationError.emptyTitle {
+            eventOverlay.showError("请输入事件标题")
+            return
+        } catch CalendarEvent.ValidationError.invalidTime {
+            eventOverlay.showError("时间格式应为 HH:mm")
+            return
+        } catch {
+            eventOverlay.showError("无法创建本地事件")
+            return
+        }
+
+        let key = CalendarGridView.dateKey(selectedDate, calendar: calendar)
+        var updated = document
+        updated.add(event, for: key)
+        do {
+            try store.save(updated)
+            document = updated
+            eventOverlay.clearInput()
+            refreshGrid()
+            refreshOverlay()
+        } catch {
+            eventOverlay.showError("无法保存本地事件")
+        }
+    }
+
+    private func deleteEvent(_ eventID: UUID) {
+        let key = CalendarGridView.dateKey(selectedDate, calendar: calendar)
+        var updated = document
+        updated.remove(eventID: eventID, for: key)
+        do {
+            try store.save(updated)
+            document = updated
+            refreshGrid()
+            refreshOverlay()
+        } catch {
+            eventOverlay.showError("无法删除本地事件")
         }
     }
 
@@ -292,72 +303,23 @@ final class CalendarPanelController: NSObject, NSTextFieldDelegate {
         return button
     }
 
-    private func actionButton(_ title: String, color: NSColor, action: Selector) -> NSButton {
-        let button = NSButton(title: title, target: self, action: action)
-        button.bezelStyle = .rounded
-        button.contentTintColor = color
-        button.font = .systemFont(ofSize: 11, weight: .semibold)
-        button.widthAnchor.constraint(equalToConstant: 108).isActive = true
-        return button
-    }
-
-    private func showError(_ message: String) {
-        feedbackLabel.stringValue = message
-        feedbackLabel.isHidden = false
-    }
-
     @objc private func previousMonth() {
         displayedDate = calendar.date(byAdding: .month, value: -1, to: displayedDate) ?? displayedDate
-        refresh()
+        eventOverlay.hide()
+        refreshGrid()
     }
 
     @objc private func nextMonth() {
         displayedDate = calendar.date(byAdding: .month, value: 1, to: displayedDate) ?? displayedDate
-        refresh()
+        eventOverlay.hide()
+        refreshGrid()
     }
 
     @objc private func returnToToday() {
         selectedDate = calendar.startOfDay(for: Date())
         let components = calendar.dateComponents([.year, .month], from: selectedDate)
         displayedDate = calendar.date(from: components) ?? selectedDate
-        refresh()
-    }
-
-    @objc private func categoryChanged() {
-        feedbackLabel.isHidden = true
-    }
-
-    @objc private func saveMark() {
-        let index = max(0, categoryControl.selectedSegment)
-        guard CalendarCategory.allCases.indices.contains(index) else { return }
-        let mark = CalendarMark(category: CalendarCategory.allCases[index], note: noteField.stringValue)
-        let key = CalendarGridView.dateKey(selectedDate, calendar: calendar)
-        do {
-            try store.set(mark, for: key)
-            document.marks[key] = mark
-            feedbackLabel.isHidden = true
-            refresh()
-        } catch {
-            showError("无法保存本地标记")
-        }
-    }
-
-    @objc private func clearMark() {
-        let key = CalendarGridView.dateKey(selectedDate, calendar: calendar)
-        do {
-            try store.set(nil, for: key)
-            document.marks.removeValue(forKey: key)
-            feedbackLabel.isHidden = true
-            refresh()
-        } catch {
-            showError("无法清除本地标记")
-        }
-    }
-
-    func controlTextDidEndEditing(_ notification: Notification) {
-        if let movement = notification.userInfo?["NSTextMovement"] as? Int,
-           movement == NSReturnTextMovement {
-            saveMark()
-        }
+        eventOverlay.hide()
+        refreshGrid()
     }
 }
