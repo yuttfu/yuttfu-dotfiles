@@ -3,6 +3,9 @@
 # 1. 全局布局设置
 start-at-login = true
 
+# Accordion 保留堆叠导航，但不露出相邻窗口边缘
+accordion-padding = 0
+
 # 让所有工作区默认进入“水平”布局（左右手风琴的前提）
 default-root-container-layout = 'tiles'
 default-root-container-orientation = 'horizontal'
@@ -37,6 +40,14 @@ outer.bottom = 12
 
 # --- 快捷键绑定 (Main Mode) ---
 [mode.main.binding]
+
+# 【Linux 肌肉记忆：打开 Ghostty】
+# Mac 实体按键为 Command + Option + T
+cmd-alt-t = '''exec-and-forget osascript -e '
+tell application "Ghostty"
+    new window
+end tell'
+'''
 
 # 【核心：手风琴切换】
 # Alt + , (逗号) 切换平铺与手风琴模式
