@@ -8,6 +8,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             .appendingPathComponent("Library/Application Support/yuttfu-sketchybar/calendar-marks.json")
     )
     private lazy var panelController = CalendarPanelController(store: store)
+    private var didFinishLaunching = false
+    private var pendingToggleAnchor: NSPoint?
 
     func applicationWillFinishLaunching(_ notification: Notification) {
         NSAppleEventManager.shared().setEventHandler(
@@ -20,6 +22,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApplication.shared.setActivationPolicy(.accessory)
+        didFinishLaunching = true
+        if let anchor = pendingToggleAnchor {
+            pendingToggleAnchor = nil
+            DispatchQueue.main.async { [weak self] in
+                self?.panelController.toggle(anchor: anchor)
+            }
+        }
     }
 
     func application(_ application: NSApplication, open urls: [URL]) {
@@ -46,6 +55,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     private func handle(_ url: URL) {
         guard url.scheme == "yuttfu-calendar", url.host == "toggle" else { return }
-        panelController.toggle(anchor: NSEvent.mouseLocation)
+        let anchor = NSEvent.mouseLocation
+        if didFinishLaunching {
+            panelController.toggle(anchor: anchor)
+        } else {
+            pendingToggleAnchor = anchor
+        }
     }
 }
