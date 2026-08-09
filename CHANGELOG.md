@@ -6,23 +6,25 @@
 
 - SketchyBar 右侧加入固定宽度的 `FOCUS HH:MM:SS` 学习计时器，以及独立的 CPU/RAM 百分比和微型曲线。
 - 日期与等宽时钟拆分成稳定的时间组；点击日期会打开无 Dock 图标的本地原生月历。
-- 原生日历提供 7×6 月视图、月份导航、返回今天，以及 ACM、AI、课程/考试、个人分类色点和 120 字以内备注。
+- 原生日历提供 7×6 月视图、月份导航和返回今天；每天支持多条可选时间事件，有事件的日期统一显示红点，点击日期后在月历上方打开当天事件浮层。
 - bootstrap 会按需构建 `$HOME/Applications/yuttfu Calendar.app`，并增加 Lua、Swift Core、AppKit 契约和迁移测试。
 
 ### Changed
 
-- 计时器不再悬停扩宽；未开始、运行和暂停只改变状态点颜色，popup 扩为 220px，并在操作后保持展开。
+- 计时器不再悬停扩宽；主项目收紧至 150px 并明确左对齐，未开始、运行和暂停只改变状态点颜色，popup 保持 220px。
 - CPU 与 RAM 继续共用一次系统采样，但使用两个独立固定宽度组件；正常状态降低边框对比度，达到阈值后才使用警告色。
+- 电池正常状态改用中性细线图标，接电显示绿色闪电，低电量才显示红色告警。
 - 刘海屏布局继续停用中间音乐岛，右侧学习仪表台成为主要信息区域。
 
 ### Fixed
 
 - 日历面板使用 `orderFrontRegardless` 在当前 Space 展开，不再主动激活 accessory 应用并把用户切到桌面。
+- 首次通过 URL 启动日历时会把 toggle 延迟到 AppKit 启动完成后的主队列，不再需要点击第二次。
 - 日历 JSON 损坏时会保留带时间戳的备份并恢复为空数据，避免影响 SketchyBar。
 
 ### Privacy
 
-- 日期标记只保存在 `$HOME/Library/Application Support/yuttfu-sketchybar/calendar-marks.json`，不调用 Apple Calendar、不创建 LaunchAgent，也不提交个人数据。
+- 日期事件只保存在 `$HOME/Library/Application Support/yuttfu-sketchybar/calendar-marks.json`；版本 1 分类备注会自动迁移为版本 2 全天事件，不调用 Apple Calendar、不创建 LaunchAgent，也不提交个人数据。
 
 ## [2026-08-07]
 
