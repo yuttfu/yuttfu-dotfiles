@@ -1,7 +1,5 @@
 require("items.widgets.clock")
 require("items.widgets.calendar")
-require("items.widgets.volume")
-require("items.widgets.network")
 require("items.widgets.battery")
 require("items.widgets.system_metrics")
 require("items.widgets.focus_timer")

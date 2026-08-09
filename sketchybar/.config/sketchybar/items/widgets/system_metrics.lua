@@ -3,8 +3,9 @@ local settings = require("settings")
 local metrics_state = require("items.widgets.system_metrics_state")
 
 local current = metrics_state.parse("")
-local graph_width = 30
-local label_width = 62
+local graph_width = 24
+local metric_width = 56
+local value_width = 32
 
 local function meter_background()
   return {
@@ -24,20 +25,28 @@ local memory_graph = sbar.add("graph", "widgets.memory.graph", graph_width, {
     line_width = 1.5,
   },
   background = { drawing = false },
-  padding_left = 2,
-  padding_right = 8,
+  padding_left = 0,
+  padding_right = 6,
 })
 
 local memory = sbar.add("item", "widgets.memory", {
   position = "right",
-  width = label_width,
-  icon = { drawing = false },
-  label = {
-    string = "RAM --",
-    align = "right",
-    width = label_width,
+  width = metric_width,
+  padding_left = 0,
+  padding_right = 0,
+  icon = {
+    string = "󰘚",
+    color = colors.mauve,
     padding_left = 8,
-    padding_right = 2,
+    padding_right = 3,
+    font = { family = settings.font.mono, style = "Semibold", size = 12.5 },
+  },
+  label = {
+    string = "--%",
+    align = "right",
+    width = value_width,
+    padding_left = 0,
+    padding_right = 7,
     font = { family = settings.font.mono, style = "Semibold", size = 10.5 },
   },
   background = { drawing = false },
@@ -46,7 +55,21 @@ local memory = sbar.add("item", "widgets.memory", {
 local memory_bracket = sbar.add("bracket", "widgets.memory.bracket", {
   "widgets.memory",
   "widgets.memory.graph",
-}, { background = meter_background() })
+}, {
+  padding_left = 0,
+  padding_right = 0,
+  background = meter_background(),
+})
+
+sbar.add("item", "widgets.metrics.gap", {
+  position = "right",
+  width = settings.item.group_gap,
+  padding_left = 0,
+  padding_right = 0,
+  icon = { drawing = false },
+  label = { drawing = false },
+  background = { drawing = false },
+})
 
 local cpu_graph = sbar.add("graph", "widgets.cpu.graph", graph_width, {
   position = "right",
@@ -56,21 +79,29 @@ local cpu_graph = sbar.add("graph", "widgets.cpu.graph", graph_width, {
     line_width = 1.5,
   },
   background = { drawing = false },
-  padding_left = 2,
-  padding_right = 8,
+  padding_left = 0,
+  padding_right = 6,
 })
 
 local cpu = sbar.add("item", "widgets.cpu", {
   position = "right",
   update_freq = 5,
-  width = label_width,
-  icon = { drawing = false },
-  label = {
-    string = "CPU --",
-    align = "right",
-    width = label_width,
+  width = metric_width,
+  padding_left = 0,
+  padding_right = 0,
+  icon = {
+    string = "󰍛",
+    color = colors.lavender,
     padding_left = 8,
-    padding_right = 2,
+    padding_right = 3,
+    font = { family = settings.font.mono, style = "Semibold", size = 12.5 },
+  },
+  label = {
+    string = "--%",
+    align = "right",
+    width = value_width,
+    padding_left = 0,
+    padding_right = 7,
     font = { family = settings.font.mono, style = "Semibold", size = 10.5 },
   },
   background = { drawing = false },
@@ -79,7 +110,21 @@ local cpu = sbar.add("item", "widgets.cpu", {
 local cpu_bracket = sbar.add("bracket", "widgets.cpu.bracket", {
   "widgets.cpu",
   "widgets.cpu.graph",
-}, { background = meter_background() })
+}, {
+  padding_left = 0,
+  padding_right = 0,
+  background = meter_background(),
+})
+
+sbar.add("item", "widgets.metrics.leading_gap", {
+  position = "right",
+  width = settings.item.group_gap,
+  padding_left = 0,
+  padding_right = 0,
+  icon = { drawing = false },
+  label = { drawing = false },
+  background = { drawing = false },
+})
 
 local function severity_color(value, normal)
   local severity = metrics_state.severity(value)
@@ -92,12 +137,25 @@ local function severity_color(value, normal)
   return normal
 end
 
+local function percentage_label(value, valid)
+  if not valid then
+    return "--%"
+  end
+  return string.format("%d%%", value)
+end
+
 local function render()
   local cpu_color = current.cpu_valid and severity_color(current.cpu, colors.lavender) or colors.overlay0
   local memory_color = current.memory_valid and severity_color(current.memory, colors.mauve) or colors.overlay0
 
-  cpu:set({ label = { string = metrics_state.cpu_label(current), color = colors.text } })
-  memory:set({ label = { string = metrics_state.memory_label(current), color = colors.text } })
+  cpu:set({
+    icon = { color = cpu_color },
+    label = { string = percentage_label(current.cpu, current.cpu_valid), color = colors.text },
+  })
+  memory:set({
+    icon = { color = memory_color },
+    label = { string = percentage_label(current.memory, current.memory_valid), color = colors.text },
+  })
 
   cpu_graph:set({
     graph = {
