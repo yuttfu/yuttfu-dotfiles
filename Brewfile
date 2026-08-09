@@ -5,7 +5,6 @@ brew "stow"
 brew "lua"
 brew "ripgrep"
 brew "jq"
-brew "nowplaying-cli"
 brew "felixkratz/formulae/sketchybar"
 brew "felixkratz/formulae/borders"
 

@@ -2,7 +2,39 @@
 
 一套可迁移的 macOS 桌面环境：AeroSpace 管理窗口，SketchyBar 负责顶部状态栏，JankyBorders 标出当前窗口；Ghostty 和 Visual Studio Code 使用克制的玻璃透明效果。
 
-它只包含已经整理、验证过的配置。Neovim、Yazi、WezTerm 和个人 shell 配置仍留在工作目录中，不会随这次迁移安装或覆盖。
+它只包含已经整理、验证过的配置；未完成的工具不会被迁移脚本安装或覆盖。
+
+## SketchyBar 学习仪表台
+
+![yuttfu SketchyBar 学习仪表台](docs/assets/sketchybar-overview.png)
+
+这条顶部栏围绕学习、开发和录制设计，使用 Catppuccin Mocha 配色、圆角半透明背景和刘海安全布局。所有常用信息都放在屏幕两侧，中间区域保持干净。
+
+| 区域 | 组件 | 作用 |
+| --- | --- | --- |
+| 左侧 | ` yuttfu` | 打开系统设置，也是整套配置的身份标记。 |
+| 左侧 | AeroSpace 工作区 | 显示 1–9 号工作区及其中的应用图标；点击数字即可切换。 |
+| 左侧 | 当前应用 | 实时显示正在使用的应用，录制时也能清楚交代上下文。 |
+| 右侧 | `FOCUS HH:MM:SS` | 面向学习的正计时器；点击后可以开始、暂停和复位。 |
+| 右侧 | CPU / RAM | 分开显示实时占用百分比和短曲线，高负载时才提高警示色。 |
+| 右侧 | OBS | 仅在录制相关状态下提示，避免忘记录制或误以为仍在录制。 |
+| 右侧 | 电池 | 正常状态保持低对比度，接电显示绿色闪电，低电量显示红色提醒。 |
+| 右侧 | 日期 / 时钟 | 日期点击后打开本地事件月历，时钟保持固定宽度以避免界面跳动。 |
+
+日期组件调用的是无 Dock 图标的本地月历，而不是 Apple Calendar。月历使用固定 7×6 网格；有事件的日期显示红点，点击某天后会在月历上方展开当天事件。每天可保存多条“可选时间 + 标题”事件并逐条删除，数据只保存在：
+
+```text
+$HOME/Library/Application Support/yuttfu-sketchybar/calendar-marks.json
+```
+
+完整的 `./bootstrap.sh --apply` 会构建并安装 `$HOME/Applications/yuttfu Calendar.app`；`--links-only` 不会触发 Swift 构建。修改日历源码后也可以单独重建：
+
+```bash
+bash macos/yuttfu-calendar-panel/build-app.sh "$HOME/Applications/yuttfu Calendar.app"
+```
+
+> [!NOTE]
+> Ghostty、Zellij 和 Neovim 的下一轮配置正在规划中，后续会继续统一终端复用、编辑器体验和录制展示效果，敬请期待。
 
 ## 在新 Mac 上恢复
 
@@ -26,42 +58,6 @@
    ```
 
 4. 首次启动 AeroSpace、SketchyBar 和 JankyBorders 时，按 macOS 的提示授予所需权限；AeroSpace 通常需要辅助功能权限。
-
-## SketchyBar 学习仪表台
-
-右侧状态区以学习计时为主：150px 的 `FOCUS HH:MM:SS` 使用明确左对齐，点击后可以开始、暂停和复位；CPU 与 RAM 分开显示图标、百分比和短曲线；电池在正常状态使用中性细线图标，接电时才显示绿色闪电；日期与等宽时钟组成一个安静的时间组。刘海屏布局不会加载中间音乐岛，避免组件被摄像头区域遮挡。
-
-点击日期会打开无 Dock 图标的本地月历。月历提供固定 7×6 日期网格；有事件的日期显示红点，点击某天后会在月历上方打开当天事件浮层。每天可以保存多条“可选时间 + 标题”事件，并逐条删除。旧版分类备注会在内存中自动迁移成全天事件，下一次写入时保存为版本 2。它不调用 Apple Calendar，也不请求日历权限；数据只保存在：
-
-```text
-$HOME/Library/Application Support/yuttfu-sketchybar/calendar-marks.json
-```
-
-完整的 `./bootstrap.sh --apply` 会构建并安装 `$HOME/Applications/yuttfu Calendar.app`；`--links-only` 不会触发 Swift 构建。修改日历源码后也可以单独重建：
-
-```bash
-bash macos/yuttfu-calendar-panel/build-app.sh "$HOME/Applications/yuttfu Calendar.app"
-```
-
-## SketchyBar 音乐岛
-
-音乐岛位于 SketchyBar 中间：新歌会展开 5 秒，悬停时显示歌手，点击后打开带进度、播放控制和最近 6 首记录的原生面板。QQ音乐是完整适配目标；网易云音乐使用系统媒体信息，属于尽力而为支持。
-
-`./bootstrap.sh --apply` 会构建 `$HOME/Applications/yuttfu Media Helper.app` 并安装登录启动项。第一次安装后可以直接启动：
-
-```bash
-open -g "$HOME/Applications/yuttfu Media Helper.app"
-```
-
-随后在“系统设置 → 隐私与安全性 → 辅助功能”中允许 **yuttfu Media Helper**。这项权限只用于读取 QQ音乐的播放状态、操作上一首/播放/下一首、拖动进度，以及按歌名与歌手定位历史歌曲；不会写入 QQ音乐的数据文件，也不会使用固定屏幕坐标。
-
-修改 helper 后可单独重建：
-
-```bash
-bash macos/yuttfu-media-helper/build-app.sh "$HOME/Applications/yuttfu Media Helper.app"
-```
-
-运行时只会在 `$HOME/.cache/yuttfu-sketchybar/` 保存最近 6 首记录和 QQ音乐封面缓存，这些内容不会进入 Git。若 QQ音乐升级后控制失效，先确认辅助功能权限仍然开启，再运行下面的核心测试并检查 `PlayingList.archive` 字段或辅助功能元素是否变化。
 
 ## 防止 Codex 工作时过快睡眠
 
@@ -106,5 +102,4 @@ bash tests/test_calendar_panel.sh
 bash tests/test_glass_effects.sh
 bash tests/test_bootstrap.sh
 bash macos/yuttfu-calendar-panel/test-core.sh
-bash macos/yuttfu-media-helper/test-core.sh
 ```
