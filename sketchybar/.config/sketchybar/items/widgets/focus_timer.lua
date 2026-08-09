@@ -25,19 +25,21 @@ end
 local focus_timer = sbar.add("item", "focus_timer", {
   position = "right",
   update_freq = 1,
-  width = 168,
+  width = 150,
   icon = {
     string = "●",
     color = colors.overlay0,
     font = { family = settings.font.text, style = "Semibold", size = 9.0 },
-    padding_left = 10,
+    padding_left = 8,
     padding_right = 6,
   },
   label = {
     string = "FOCUS 00:00:00",
+    width = 122,
+    align = "left",
     font = { family = settings.font.mono, style = "Bold", size = 11.0 },
     padding_left = 0,
-    padding_right = 10,
+    padding_right = 8,
   },
   background = {
     color = colors.with_alpha(colors.surface0, 0.9),
@@ -146,7 +148,7 @@ local function refresh()
   focus_timer:set({
     icon = { color = color },
     label = { string = timer.dashboard(state, now()) },
-    width = 168,
+    width = 150,
     background = {
       color = colors.with_alpha(colors.surface0, 0.9),
       border_color = colors.with_alpha(colors.surface1, 0.72),
