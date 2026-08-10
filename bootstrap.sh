@@ -5,7 +5,7 @@ set -uo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 BREWFILE="$ROOT/Brewfile"
 VSCODE_EXTENSIONS="$ROOT/vscode/extensions.txt"
-PACKAGES=(aerospace borders ghostty sketchybar vscode)
+PACKAGES=(aerospace borders ghostty sketchybar vscode zsh)
 CODEX_AWAKE_SOURCE="$ROOT/macos/bin/codex-awake"
 CALENDAR_PANEL_BUILD="$ROOT/macos/yuttfu-calendar-panel/build-app.sh"
 failures=0

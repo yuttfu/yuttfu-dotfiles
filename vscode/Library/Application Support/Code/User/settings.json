@@ -5,7 +5,38 @@
   "window.titleBarStyle": "custom",
   "window.systemColorTheme": "dark",
   "window.autoDetectColorScheme": false,
+  "terminal.integrated.profiles.osx": {
+    "yuttfu zsh": {
+      "path": "/bin/zsh",
+      "args": ["-l"],
+      "icon": "terminal-zsh"
+    }
+  },
+  "terminal.integrated.defaultProfile.osx": "yuttfu zsh",
+  "terminal.integrated.fontFamily": "MesloLGS NF",
+  "terminal.integrated.fontSize": 14,
+  "terminal.integrated.lineHeight": 1.15,
+  "terminal.integrated.cursorStyle": "block",
+  "terminal.integrated.cursorBlinking": false,
+  "terminal.integrated.minimumContrastRatio": 1,
+  "terminal.integrated.drawBoldTextInBrightColors": false,
   "terminal.integrated.gpuAcceleration": "off",
+  "terminal.integrated.shellIntegration.enabled": true,
+  "terminal.integrated.smoothScrolling": true,
+  "workbench.settings.applyToAllProfiles": [
+    "terminal.integrated.profiles.osx",
+    "terminal.integrated.defaultProfile.osx",
+    "terminal.integrated.fontFamily",
+    "terminal.integrated.fontSize",
+    "terminal.integrated.lineHeight",
+    "terminal.integrated.cursorStyle",
+    "terminal.integrated.cursorBlinking",
+    "terminal.integrated.minimumContrastRatio",
+    "terminal.integrated.drawBoldTextInBrightColors",
+    "terminal.integrated.gpuAcceleration",
+    "terminal.integrated.shellIntegration.enabled",
+    "terminal.integrated.smoothScrolling"
+  ],
   "deepseek.lang": "cn",
   "vscode_vibrancy.type": "under-window",
   "vscode_vibrancy.opacity": 0.84,
@@ -13,5 +44,6 @@
   "vscode_vibrancy.windowMode": "auto",
   "vscode_vibrancy.theme": "Default Dark",
   "vscode_vibrancy.disableColorCustomizations": true,
-  "vscode_vibrancy.preventFlash": true
+  "vscode_vibrancy.preventFlash": true,
+  "http.systemCertificatesNode": true
 }

@@ -97,8 +97,3 @@ alt-shift-c = 'reload-config'
 # 【分屏方向切换】
 alt-v = 'layout tiles vertical'
 alt-b = 'layout tiles horizontal'
-
-# --- 自动规则 ---
-[[on-window-detected]]
-if.app-id = 'com.mitchellh.ghostty'
-run = "move-node-to-workspace 1"

@@ -8,7 +8,13 @@ window-padding-x = 12
 window-padding-y = 8
 
 # Native macOS glass
-background-opacity = 0.88
+background-opacity = 0.72
 background-opacity-cells = true
 background-blur = macos-glass-regular
 macos-titlebar-style = transparent
+
+# Cursor: solid block caret for input (instead of the default beam/bar)
+cursor-style = block
+# Ghostty's shell integration flips the prompt cursor to a bar; disable just that
+# feature so the block cursor above also applies at the zsh prompt.
+shell-integration-features = no-cursor

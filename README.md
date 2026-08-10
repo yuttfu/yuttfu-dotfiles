@@ -34,7 +34,7 @@ bash macos/yuttfu-calendar-panel/build-app.sh "$HOME/Applications/yuttfu Calenda
 ```
 
 > [!NOTE]
-> Ghostty、Zellij 和 Neovim 的下一轮配置正在规划中，后续会继续统一终端复用、编辑器体验和录制展示效果，敬请期待。
+> Ghostty 与 Zsh/Starship 已完成首轮整理；Zellij 和 Neovim 仍在规划中，后续会继续统一终端复用与编辑器体验，敬请期待。
 
 ## 在新 Mac 上恢复
 
@@ -89,9 +89,29 @@ codex-awake --minutes 180
 
 ## Ghostty 与 Visual Studio Code 透明效果
 
-Ghostty 的主题、字体和透明度由仓库中的配置直接控制。Visual Studio Code 使用与 Ghostty 一致的 Catppuccin Mocha（Mauve 强调色与 minimal 工作台），设置文件会被链接，扩展清单会在 `./bootstrap.sh --apply` 时恢复。
+Ghostty 的主题、字体和透明度由仓库中的配置直接控制。它使用 Catppuccin Mocha、MesloLGS NF、macOS regular glass 和 `0.72` 不透明度，让背景明显通透，同时通过原生模糊保持文字可读。
+
+Visual Studio Code 底部集成终端固定为 `/bin/zsh` 登录 shell，使用 MesloLGS NF、14 号字与方块光标。shell、字体和布局等核心设置通过 `workbench.settings.applyToAllProfiles` 同步到所有 VS Code Profile，但不设置 `workbench.colorCustomizations`；终端颜色继承当前 Profile，Background 壁纸模拟透明效果不会被额外背景色遮挡。
 
 由于它会改动 VS Code 的应用资源，玻璃效果必须在 VS Code 内手动确认：安装完成后打开命令面板，运行 **Vibrancy Continued: Enable Vibrancy**。VS Code 更新后若效果失效，再运行 **Vibrancy Continued: Reload Vibrancy**。这是刻意保留的显式操作，避免迁移脚本静默修改应用包。
+
+## Zsh 与 Starship
+
+Ghostty 和 VS Code 集成终端共用仓库中的原生 Zsh 配置，但使用两个同色系的 Starship 布局。Ghostty 保留完整 Catppuccin Powerline，按场景显示 Git、C/C++、Python、Node.js、Conda 和命令耗时；VS Code 底部终端自动切换到 `starship-vscode.toml`，只保留用户名、缩短目录、Git、Conda 和时间，避免在狭面板中拥挤。VS Code 中只要仓库存在未提交改动，就显示一个红色 `●`，仓库干净时隐藏；具体改动数量使用 `git status` 查看。
+
+Conda 的 `base` 自动激活已经关闭，Conda 也不会自行修改提示符。进入 AI 环境时手动执行：
+
+```bash
+conda activate <环境名>
+```
+
+Starship 会显示当前环境一次。私有代理、API 配置或仅当前机器需要的路径可以放进不受 Git 管理的 `$HOME/.zshrc.local`。
+
+当前 Mac 首次切换到仓库配置前，应先备份已有的 `.zshrc`、`.zprofile`、`.condarc` 和 `.config/starship.toml`。迁移后的文件由 Stow 链接，包括 VS Code 专用的 `.config/starship-vscode.toml`；新 Mac 执行正常的 `./bootstrap.sh --apply` 即可恢复。
+
+## Google Chrome 配色
+
+Chrome 使用官方 Catppuccin Mocha 主题统一标签栏、地址栏和新标签页的基础颜色。主题安装需要在 Chrome 中手动确认，仓库不保存浏览记录、Cookie 或个人 Profile。主题链接、恢复方式和安全边界见 [Chrome 配色指南](chrome/README.md)。
 
 ## 本地验证
 
@@ -100,6 +120,7 @@ bash tests/test_desktop_shell.sh
 bash tests/test_status_widgets.sh
 bash tests/test_calendar_panel.sh
 bash tests/test_glass_effects.sh
+bash tests/test_shell_stack.sh
 bash tests/test_bootstrap.sh
 bash macos/yuttfu-calendar-panel/test-core.sh
 ```
