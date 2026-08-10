@@ -4,6 +4,7 @@
 
 ### Added
 
+- README 新增专注计时器未开始、运行、暂停三种状态，以及日历查看、添加两种状态的真实局部截图。
 - 新增可迁移的原生 Zsh 与 Starship 配置，Ghostty 和 VS Code 集成终端共享精简 Catppuccin Powerline 提示符。
 - Brewfile 补齐自动建议、语法高亮、补全、fzf、zoxide、fnm、Starship 与常用现代命令行工具。
 - 新增 shell 栈测试，覆盖启动顺序、Conda 提示符策略、动态 Starship 模块和 Stow 链接。
@@ -12,6 +13,8 @@
 
 ### Changed
 
+- 日历交互拆分为单击日期查看事件、双击日期添加事件；添加完成后自动返回所选日期的事件列表。
+- 测试文件继续保留在本机，但从公开文件树与历史提交中移除，避免迁移仓库夹带内部测试内容。
 - Zsh 插件改为各加载一次，可选工具缺失时安全跳过，并为本机私有配置预留 `$HOME/.zshrc.local`。
 - Conda 关闭 `base` 自动激活并停止直接修改 `PS1`，激活环境后只由 Starship 显示一次。
 - Ghostty 保持 Catppuccin Mocha 与 macOS regular glass，不透明度从 `0.88` 调整为 `0.72`。

@@ -4,7 +4,39 @@
 
 它只包含已经整理、验证过的配置；未完成的工具不会被迁移脚本安装或覆盖。
 
-## SketchyBar 学习仪表台
+## 专注计时器
+
+`FOCUS` 是面向学习的正计时器，不预设结束时间，让 ACM、AI 学习和长时间开发过程中始终有明确的时间感。点击顶部计时器会展开控制层。
+
+| 未开始 | 计时中 | 已暂停 |
+| --- | --- | --- |
+| ![专注计时器未开始](docs/assets/focus-idle.png) | ![专注计时器计时中](docs/assets/focus-running.png) | ![专注计时器已暂停](docs/assets/focus-paused.png) |
+| 灰色状态点，时间归零，可以开始新的专注记录。 | 绿色状态点，时间持续递增，主操作切换为暂停。 | 桃色状态点，保留累计时间，可以继续计时或复位。 |
+
+计时器会在系统睡眠前自动暂停，并把状态保存在本机；重新打开 SketchyBar 不会把休眠时间错误计入学习时长。
+
+## 本地事件日历
+
+日期组件打开的是无 Dock 图标的 `yuttfu Calendar.app`，不调用 Apple Calendar。查看与添加采用两个独立模式：
+
+| 单击查看事件 | 双击添加事件 |
+| --- | --- |
+| ![日历单击查看事件](docs/assets/calendar-view.png) | ![日历双击添加事件](docs/assets/calendar-add.png) |
+| 单击日期只进入查看事件层；没有安排时显示空状态，已有事件可在列表中逐条删除。 | 双击日期直接进入添加事件层，可填写可选时间和标题；添加成功后自动回到查看层。 |
+
+月历使用固定 `7×6` 网格，有事件的日期显示红点。每天可保存多条“可选时间 + 标题”事件，数据只保存在：
+
+```text
+$HOME/Library/Application Support/yuttfu-sketchybar/calendar-marks.json
+```
+
+完整的 `./bootstrap.sh --apply` 会构建并安装 `$HOME/Applications/yuttfu Calendar.app`；`--links-only` 不会触发 Swift 构建。修改日历源码后也可以单独重建：
+
+```bash
+bash macos/yuttfu-calendar-panel/build-app.sh "$HOME/Applications/yuttfu Calendar.app"
+```
+
+## SketchyBar 学习仪表台总览
 
 ![yuttfu SketchyBar 学习仪表台](docs/assets/sketchybar-overview.png)
 
@@ -19,19 +51,7 @@
 | 右侧 | CPU / RAM | 分开显示实时占用百分比和短曲线，高负载时才提高警示色。 |
 | 右侧 | OBS | 仅在录制相关状态下提示，避免忘记录制或误以为仍在录制。 |
 | 右侧 | 电池 | 正常状态保持低对比度，接电显示绿色闪电，低电量显示红色提醒。 |
-| 右侧 | 日期 / 时钟 | 日期点击后打开本地事件月历，时钟保持固定宽度以避免界面跳动。 |
-
-日期组件调用的是无 Dock 图标的本地月历，而不是 Apple Calendar。月历使用固定 7×6 网格；有事件的日期显示红点，点击某天后会在月历上方展开当天事件。每天可保存多条“可选时间 + 标题”事件并逐条删除，数据只保存在：
-
-```text
-$HOME/Library/Application Support/yuttfu-sketchybar/calendar-marks.json
-```
-
-完整的 `./bootstrap.sh --apply` 会构建并安装 `$HOME/Applications/yuttfu Calendar.app`；`--links-only` 不会触发 Swift 构建。修改日历源码后也可以单独重建：
-
-```bash
-bash macos/yuttfu-calendar-panel/build-app.sh "$HOME/Applications/yuttfu Calendar.app"
-```
+| 右侧 | 日期 / 时钟 | 日期打开本地事件月历，时钟保持固定宽度以避免界面跳动。 |
 
 > [!NOTE]
 > Ghostty 与 Zsh/Starship 已完成首轮整理；Zellij 和 Neovim 仍在规划中，后续会继续统一终端复用与编辑器体验，敬请期待。
@@ -112,15 +132,3 @@ Starship 会显示当前环境一次。私有代理、API 配置或仅当前机�
 ## Google Chrome 配色
 
 Chrome 使用官方 Catppuccin Mocha 主题统一标签栏、地址栏和新标签页的基础颜色。主题安装需要在 Chrome 中手动确认，仓库不保存浏览记录、Cookie 或个人 Profile。主题链接、恢复方式和安全边界见 [Chrome 配色指南](chrome/README.md)。
-
-## 本地验证
-
-```bash
-bash tests/test_desktop_shell.sh
-bash tests/test_status_widgets.sh
-bash tests/test_calendar_panel.sh
-bash tests/test_glass_effects.sh
-bash tests/test_shell_stack.sh
-bash tests/test_bootstrap.sh
-bash macos/yuttfu-calendar-panel/test-core.sh
-```

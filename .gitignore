@@ -5,3 +5,6 @@
 /macos/yuttfu-media-helper/dist/
 /macos/yuttfu-calendar-panel/dist/
 /docs/superpowers/
+/tests/
+/macos/yuttfu-calendar-panel/Tests/
+/macos/yuttfu-calendar-panel/test-core.sh

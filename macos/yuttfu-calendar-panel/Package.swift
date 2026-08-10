@@ -8,18 +8,12 @@ let package = Package(
     products: [
         .library(name: "YuttfuCalendarCore", targets: ["YuttfuCalendarCore"]),
         .executable(name: "yuttfu-calendar-panel", targets: ["YuttfuCalendarPanel"]),
-        .executable(name: "yuttfu-calendar-core-tests", targets: ["YuttfuCalendarCoreTests"]),
     ],
     targets: [
         .target(name: "YuttfuCalendarCore"),
         .executableTarget(
             name: "YuttfuCalendarPanel",
             dependencies: ["YuttfuCalendarCore"]
-        ),
-        .executableTarget(
-            name: "YuttfuCalendarCoreTests",
-            dependencies: ["YuttfuCalendarCore"],
-            path: "Tests/YuttfuCalendarCoreTests"
         ),
     ]
 )

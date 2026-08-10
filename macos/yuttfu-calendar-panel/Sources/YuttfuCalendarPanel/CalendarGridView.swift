@@ -94,6 +94,8 @@ private final class DayCellView: NSView {
     private var isToday = false
     private var isSelected = false
     private var markColor: NSColor?
+    private var clickState = CalendarClickState()
+    private var pendingSingleClick: DispatchWorkItem?
 
     override var isFlipped: Bool { false }
 
@@ -105,6 +107,11 @@ private final class DayCellView: NSView {
         isSelected: Bool,
         markColor: NSColor?
     ) {
+        if self.date != date {
+            pendingSingleClick?.cancel()
+            pendingSingleClick = nil
+            clickState = CalendarClickState()
+        }
         self.date = date
         self.day = day
         self.isInDisplayedMonth = isInDisplayedMonth
@@ -115,15 +122,42 @@ private final class DayCellView: NSView {
     }
 
     override func mouseDown(with event: NSEvent) {
-        if event.clickCount >= 2 {
-            onEdit?(date)
-        } else {
-            onSelect?(date)
+        for action in clickState.receive(clickCount: event.clickCount) {
+            switch action {
+            case .scheduleView:
+                scheduleSingleClick(for: date)
+            case .cancelScheduledView:
+                pendingSingleClick?.cancel()
+                pendingSingleClick = nil
+            case .showAdd:
+                onEdit?(date)
+            case .showView:
+                break
+            }
         }
     }
 
     override func rightMouseDown(with event: NSEvent) {
+        pendingSingleClick?.cancel()
+        pendingSingleClick = nil
+        clickState = CalendarClickState()
         onEdit?(date)
+    }
+
+    private func scheduleSingleClick(for date: Date) {
+        pendingSingleClick?.cancel()
+        let work = DispatchWorkItem { [weak self] in
+            guard let self else { return }
+            self.pendingSingleClick = nil
+            if self.clickState.fireScheduledView() == .showView {
+                self.onSelect?(date)
+            }
+        }
+        pendingSingleClick = work
+        DispatchQueue.main.asyncAfter(
+            deadline: .now() + NSEvent.doubleClickInterval,
+            execute: work
+        )
     }
 
     override func draw(_ dirtyRect: NSRect) {

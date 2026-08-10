@@ -152,13 +152,16 @@ final class CalendarPanelController: NSObject {
 
     private func wireInteractions() {
         grid.onSelect = { [weak self] date in
-            self?.select(date)
+            self?.showEvents(on: date)
         }
         grid.onEdit = { [weak self] date in
-            self?.select(date)
+            self?.showAddEvent(on: date)
         }
         eventOverlay.onClose = { [weak self] in
             self?.eventOverlay.hide()
+        }
+        eventOverlay.onBack = { [weak self] in
+            self?.refreshViewingOverlay()
         }
         eventOverlay.onAdd = { [weak self] time, title in
             self?.addEvent(time: time, title: title)
@@ -217,15 +220,21 @@ final class CalendarPanelController: NSObject {
         )
     }
 
-    private func select(_ date: Date) {
+    private func showEvents(on date: Date) {
         selectedDate = calendar.startOfDay(for: date)
         refreshGrid()
-        refreshOverlay()
+        refreshViewingOverlay()
     }
 
-    private func refreshOverlay() {
+    private func showAddEvent(on date: Date) {
+        selectedDate = calendar.startOfDay(for: date)
+        refreshGrid()
+        eventOverlay.showAdding(dateTitle: selectedDateTitle())
+    }
+
+    private func refreshViewingOverlay() {
         let key = CalendarGridView.dateKey(selectedDate, calendar: calendar)
-        eventOverlay.show(
+        eventOverlay.showViewing(
             dateTitle: selectedDateTitle(),
             events: document.events(on: key)
         )
@@ -266,7 +275,7 @@ final class CalendarPanelController: NSObject {
             document = updated
             eventOverlay.clearInput()
             refreshGrid()
-            refreshOverlay()
+            refreshViewingOverlay()
         } catch {
             eventOverlay.showError("无法保存本地事件")
         }
@@ -280,7 +289,7 @@ final class CalendarPanelController: NSObject {
             try store.save(updated)
             document = updated
             refreshGrid()
-            refreshOverlay()
+            refreshViewingOverlay()
         } catch {
             eventOverlay.showError("无法删除本地事件")
         }

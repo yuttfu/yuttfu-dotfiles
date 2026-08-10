@@ -4,11 +4,14 @@ import YuttfuCalendarCore
 @MainActor
 final class CalendarEventOverlayView: NSView {
     var onClose: (() -> Void)?
+    var onBack: (() -> Void)?
     var onAdd: ((_ time: String?, _ title: String) -> Void)?
     var onDelete: ((_ eventID: UUID) -> Void)?
 
     private let dateLabel = NSTextField(labelWithString: "")
     private let countLabel = NSTextField(labelWithString: "")
+    private let viewContainer = NSStackView()
+    private let addContainer = NSStackView()
     private let eventStack = NSStackView()
     private let emptyLabel = NSTextField(labelWithString: "当天暂无事件")
     private let feedbackLabel = NSTextField(labelWithString: "")
@@ -26,12 +29,27 @@ final class CalendarEventOverlayView: NSView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func show(dateTitle: String, events: [CalendarEvent]) {
+    func showViewing(dateTitle: String, events: [CalendarEvent]) {
         dateLabel.stringValue = dateTitle
         countLabel.stringValue = "\(events.count) 项"
         rebuildEventList(events)
+        viewContainer.isHidden = false
+        addContainer.isHidden = true
         feedbackLabel.isHidden = true
         isHidden = false
+    }
+
+    func showAdding(dateTitle: String) {
+        dateLabel.stringValue = dateTitle
+        countLabel.stringValue = "添加事件"
+        clearInput()
+        viewContainer.isHidden = true
+        addContainer.isHidden = false
+        isHidden = false
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            self.window?.makeFirstResponder(self.titleField)
+        }
     }
 
     func hide() {
@@ -76,6 +94,34 @@ final class CalendarEventOverlayView: NSView {
         header.alignment = .centerY
         header.spacing = 8
 
+        configureViewContainer()
+        configureAddContainer()
+
+        feedbackLabel.textColor = Theme.red
+        feedbackLabel.font = .systemFont(ofSize: 9.5, weight: .medium)
+        feedbackLabel.alignment = .left
+        feedbackLabel.isHidden = true
+
+        let root = NSStackView(views: [header, viewContainer, addContainer, feedbackLabel])
+        root.orientation = .vertical
+        root.alignment = .leading
+        root.spacing = 9
+        root.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(root)
+
+        NSLayoutConstraint.activate([
+            root.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12),
+            root.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -12),
+            root.topAnchor.constraint(equalTo: topAnchor, constant: 11),
+            root.bottomAnchor.constraint(lessThanOrEqualTo: bottomAnchor, constant: -10),
+            header.widthAnchor.constraint(equalTo: root.widthAnchor),
+            viewContainer.widthAnchor.constraint(equalTo: root.widthAnchor),
+            addContainer.widthAnchor.constraint(equalTo: root.widthAnchor),
+            feedbackLabel.widthAnchor.constraint(equalTo: root.widthAnchor),
+        ])
+    }
+
+    private func configureViewContainer() {
         eventStack.orientation = .vertical
         eventStack.alignment = .leading
         eventStack.spacing = 5
@@ -87,13 +133,25 @@ final class CalendarEventOverlayView: NSView {
         scroll.autohidesScrollers = true
         scroll.borderType = .noBorder
         scroll.documentView = eventStack
-        scroll.heightAnchor.constraint(equalToConstant: 126).isActive = true
+        scroll.heightAnchor.constraint(equalToConstant: 192).isActive = true
+
         NSLayoutConstraint.activate([
             eventStack.leadingAnchor.constraint(equalTo: scroll.contentView.leadingAnchor),
             eventStack.trailingAnchor.constraint(equalTo: scroll.contentView.trailingAnchor),
             eventStack.topAnchor.constraint(equalTo: scroll.contentView.topAnchor),
             eventStack.widthAnchor.constraint(equalTo: scroll.contentView.widthAnchor),
         ])
+
+        viewContainer.orientation = .vertical
+        viewContainer.alignment = .leading
+        viewContainer.addArrangedSubview(scroll)
+        scroll.widthAnchor.constraint(equalTo: viewContainer.widthAnchor).isActive = true
+    }
+
+    private func configureAddContainer() {
+        let hint = NSTextField(labelWithString: "记录这一天的学习、比赛或安排")
+        hint.textColor = Theme.subtext
+        hint.font = .systemFont(ofSize: 10.5, weight: .medium)
 
         timeField.placeholderString = "时间"
         timeField.toolTip = "可选，格式 HH:mm"
@@ -104,7 +162,7 @@ final class CalendarEventOverlayView: NSView {
         timeField.isBezeled = true
         timeField.bezelStyle = .roundedBezel
         timeField.focusRingType = .none
-        timeField.widthAnchor.constraint(equalToConstant: 54).isActive = true
+        timeField.widthAnchor.constraint(equalToConstant: 58).isActive = true
 
         titleField.placeholderString = "事件标题"
         titleField.font = .systemFont(ofSize: 10.5, weight: .medium)
@@ -116,38 +174,34 @@ final class CalendarEventOverlayView: NSView {
         titleField.target = self
         titleField.action = #selector(addEvent)
 
-        let add = NSButton(title: "+", target: self, action: #selector(addEvent))
+        let fields = NSStackView(views: [timeField, titleField])
+        fields.orientation = .horizontal
+        fields.alignment = .centerY
+        fields.spacing = 7
+
+        let add = NSButton(title: "添加事件", target: self, action: #selector(addEvent))
         add.bezelStyle = .rounded
         add.contentTintColor = Theme.lavender
-        add.font = .systemFont(ofSize: 14, weight: .semibold)
-        add.widthAnchor.constraint(equalToConstant: 30).isActive = true
+        add.font = .systemFont(ofSize: 11, weight: .semibold)
 
-        let composer = NSStackView(views: [timeField, titleField, add])
-        composer.orientation = .horizontal
-        composer.alignment = .centerY
-        composer.spacing = 6
+        let back = NSButton(title: "← 返回查看", target: self, action: #selector(backToViewing))
+        back.isBordered = false
+        back.contentTintColor = Theme.subtext
+        back.font = .systemFont(ofSize: 10.5, weight: .medium)
 
-        feedbackLabel.textColor = Theme.red
-        feedbackLabel.font = .systemFont(ofSize: 9.5, weight: .medium)
-        feedbackLabel.alignment = .left
-        feedbackLabel.isHidden = true
-
-        let root = NSStackView(views: [header, scroll, composer, feedbackLabel])
-        root.orientation = .vertical
-        root.alignment = .leading
-        root.spacing = 8
-        root.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(root)
+        addContainer.orientation = .vertical
+        addContainer.alignment = .leading
+        addContainer.spacing = 12
+        addContainer.edgeInsets = NSEdgeInsets(top: 20, left: 0, bottom: 0, right: 0)
+        for view in [hint, fields, add, back] {
+            addContainer.addArrangedSubview(view)
+        }
 
         NSLayoutConstraint.activate([
-            root.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12),
-            root.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -12),
-            root.topAnchor.constraint(equalTo: topAnchor, constant: 11),
-            root.bottomAnchor.constraint(lessThanOrEqualTo: bottomAnchor, constant: -10),
-            header.widthAnchor.constraint(equalTo: root.widthAnchor),
-            scroll.widthAnchor.constraint(equalTo: root.widthAnchor),
-            composer.widthAnchor.constraint(equalTo: root.widthAnchor),
-            feedbackLabel.widthAnchor.constraint(equalTo: root.widthAnchor),
+            hint.widthAnchor.constraint(equalTo: addContainer.widthAnchor),
+            fields.widthAnchor.constraint(equalTo: addContainer.widthAnchor),
+            add.widthAnchor.constraint(equalTo: addContainer.widthAnchor),
+            back.widthAnchor.constraint(equalTo: addContainer.widthAnchor),
         ])
     }
 
@@ -204,6 +258,10 @@ final class CalendarEventOverlayView: NSView {
 
     @objc private func closeOverlay() {
         onClose?()
+    }
+
+    @objc private func backToViewing() {
+        onBack?()
     }
 
     @objc private func addEvent() {
