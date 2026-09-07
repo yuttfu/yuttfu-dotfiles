@@ -5,9 +5,9 @@ format = """
 $os\
 $username\
 $hostname\
-[](fg:cyan bg:magenta)\
+[](fg:cyan bg:purple)\
 $directory\
-[](magenta) \
+[](purple) \
 $git_branch\
 $git_status\
 $c\
@@ -44,7 +44,7 @@ style_root = "fg:black bg:red"
 format = "[ $user ]($style)"
 
 [directory]
-style = "fg:black bg:magenta"
+style = "fg:black bg:purple"
 format = "[ $path ]($style)"
 truncation_length = 0
 truncate_to_repo = false
