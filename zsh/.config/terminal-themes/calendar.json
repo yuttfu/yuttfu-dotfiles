@@ -1,0 +1,23 @@
+{
+  "managed_by": "terminal-theme",
+  "theme": "synthwave",
+  "colors": {
+    "base": "#200933",
+    "mantle": "#1a072a",
+    "crust": "#200933",
+    "text": "#ffffff",
+    "subtext0": "#c7c2cc",
+    "overlay0": "#8a86b3",
+    "surface0": "#321d43",
+    "surface1": "#483558",
+    "lavender": "#fc199a",
+    "mauve": "#fc199a",
+    "teal": "#61e2ff",
+    "green": "#51be72",
+    "yellow": "#ffcc00",
+    "peach": "#ffcc00",
+    "red": "#ff5370",
+    "active_border": "#fc199a",
+    "inactive_border": "#740f5a"
+  }
+}

@@ -1,0 +1,98 @@
+{
+  "manifest_version": 3,
+  "name": "Desktop Palette - Amethyst Dark",
+  "version": "1.0.0",
+  "description": "Local color adaptation from the shared desktop palette. No scripts or website access.",
+  "theme": {
+    "colors": {
+      "frame": [
+        15,
+        0,
+        30
+      ],
+      "frame_inactive": [
+        18,
+        0,
+        36
+      ],
+      "toolbar": [
+        36,
+        19,
+        53
+      ],
+      "toolbar_text": [
+        242,
+        232,
+        247
+      ],
+      "toolbar_button_icon": [
+        186,
+        125,
+        217
+      ],
+      "tab_text": [
+        242,
+        232,
+        247
+      ],
+      "tab_background_text": [
+        186,
+        174,
+        194
+      ],
+      "tab_background_text_inactive": [
+        157,
+        133,
+        173
+      ],
+      "background_tab": [
+        15,
+        0,
+        30
+      ],
+      "background_tab_inactive": [
+        18,
+        0,
+        36
+      ],
+      "bookmark_text": [
+        242,
+        232,
+        247
+      ],
+      "omnibox_background": [
+        18,
+        0,
+        36
+      ],
+      "omnibox_text": [
+        242,
+        232,
+        247
+      ],
+      "ntp_background": [
+        18,
+        0,
+        36
+      ],
+      "ntp_text": [
+        242,
+        232,
+        247
+      ],
+      "ntp_link": [
+        186,
+        125,
+        217
+      ],
+      "ntp_header": [
+        58,
+        42,
+        74
+      ]
+    },
+    "properties": {
+      "ntp_logo_alternate": 1
+    }
+  }
+}

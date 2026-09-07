@@ -48,6 +48,8 @@ final class CalendarPanelController: NSObject {
         wireInteractions()
     }
 
+    var isVisible: Bool { panel.isVisible }
+
     func toggle(anchor: NSPoint) {
         if panel.isVisible {
             panel.orderOut(nil)

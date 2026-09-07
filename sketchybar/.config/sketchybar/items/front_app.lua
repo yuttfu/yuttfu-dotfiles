@@ -26,3 +26,8 @@ local front_app = sbar.add("item", "front_app", {
 front_app:subscribe("front_app_switched", function(env)
   front_app:set({ label = { string = env.INFO or "Desktop" } })
 end)
+
+require("theme_runtime").on_change(function()
+  front_app:set({ icon = { color = colors.teal }, label = { color = colors.text },
+    background = { color = colors.surface0, border_color = colors.surface1 } })
+end)

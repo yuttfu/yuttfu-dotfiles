@@ -1,0 +1,98 @@
+{
+  "manifest_version": 3,
+  "name": "Desktop Palette - Outrun Night",
+  "version": "1.0.0",
+  "description": "Local color adaptation from the shared desktop palette. No scripts or website access.",
+  "theme": {
+    "colors": {
+      "frame": [
+        18,
+        14,
+        39
+      ],
+      "frame_inactive": [
+        12,
+        10,
+        32
+      ],
+      "toolbar": [
+        41,
+        36,
+        65
+      ],
+      "toolbar_text": [
+        255,
+        255,
+        255
+      ],
+      "toolbar_button_icon": [
+        66,
+        198,
+        255
+      ],
+      "tab_text": [
+        255,
+        255,
+        255
+      ],
+      "tab_background_text": [
+        197,
+        196,
+        203
+      ],
+      "tab_background_text_inactive": [
+        142,
+        135,
+        184
+      ],
+      "background_tab": [
+        18,
+        14,
+        39
+      ],
+      "background_tab_inactive": [
+        12,
+        10,
+        32
+      ],
+      "bookmark_text": [
+        255,
+        255,
+        255
+      ],
+      "omnibox_background": [
+        22,
+        17,
+        48
+      ],
+      "omnibox_text": [
+        255,
+        255,
+        255
+      ],
+      "ntp_background": [
+        22,
+        17,
+        48
+      ],
+      "ntp_text": [
+        255,
+        255,
+        255
+      ],
+      "ntp_link": [
+        66,
+        198,
+        255
+      ],
+      "ntp_header": [
+        64,
+        60,
+        85
+      ]
+    },
+    "properties": {
+      "ntp_logo_alternate": 1
+    }
+  }
+}

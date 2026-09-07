@@ -8,3 +8,7 @@
 /tests/
 /macos/yuttfu-calendar-panel/Tests/
 /macos/yuttfu-calendar-panel/test-core.sh
+/ghostty/.config/ghostty/themes/.terminal-theme*
+/.backups/
+/zsh/.config/terminal-themes/.theme.lock
+**/.theme-write-*

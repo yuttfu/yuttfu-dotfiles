@@ -26,7 +26,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         if let anchor = pendingToggleAnchor {
             pendingToggleAnchor = nil
             DispatchQueue.main.async { [weak self] in
-                self?.panelController.toggle(anchor: anchor)
+                self?.togglePanel(anchor: anchor)
             }
         }
     }
@@ -53,11 +53,19 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         handle(url)
     }
 
+    private func togglePanel(anchor: NSPoint) {
+        if !panelController.isVisible && Theme.reload() {
+            panelController.stop()
+            panelController = CalendarPanelController(store: store)
+        }
+        panelController.toggle(anchor: anchor)
+    }
+
     private func handle(_ url: URL) {
         guard url.scheme == "yuttfu-calendar", url.host == "toggle" else { return }
         let anchor = NSEvent.mouseLocation
         if didFinishLaunching {
-            panelController.toggle(anchor: anchor)
+            togglePanel(anchor: anchor)
         } else {
             pendingToggleAnchor = anchor
         }

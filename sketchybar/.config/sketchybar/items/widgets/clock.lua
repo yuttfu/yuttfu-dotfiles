@@ -39,3 +39,7 @@ clock:subscribe("mouse.exited", function()
 end)
 
 refresh()
+
+require("theme_runtime").on_change(function()
+  clock:set({ label = { color = colors.text } })
+end)

@@ -48,7 +48,8 @@ zstyle ':completion:*' menu select
 # Interactive tools
 if (( $+commands[fzf] )); then
   source <(fzf --zsh 2>/dev/null)
-  export FZF_DEFAULT_OPTS='--height 40% --layout=reverse --border=rounded --color=bg+:#313244,bg:#1e1e2e,spinner:#f5e0dc,hl:#f38ba8,fg:#cdd6f4,header:#f38ba8,info:#cba6f7,pointer:#f5e0dc,marker:#f5e0dc,prompt:#cba6f7,hl+:#f38ba8'
+  # ANSI indices inherit each terminal's current theme, including VS Code Profiles.
+  export FZF_DEFAULT_OPTS='--height 40% --layout=reverse --border=rounded --color=bg+:0,bg:-1,spinner:6,hl:5,fg:-1,header:6,info:4,pointer:6,marker:2,prompt:6,hl+:5,fg+:7,border:8'
 fi
 
 if (( $+commands[fd] )); then
@@ -123,7 +124,7 @@ if (( $+commands[starship] )); then
 fi
 
 if [[ -n "$HOMEBREW_PREFIX" ]] && [[ -r "$HOMEBREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh" ]]; then
-  ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=#6c7086'
+  ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=8'
   ZSH_AUTOSUGGEST_STRATEGY=(history completion)
   source "$HOMEBREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
 fi

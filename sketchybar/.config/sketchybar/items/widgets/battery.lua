@@ -3,51 +3,60 @@ local settings = require("settings")
 local battery_state = require("items.widgets.battery_state")
 
 local battery = sbar.add("item", "widgets.battery", {
-  position = "right",
-  update_freq = 60,
-  width = 56,
-  padding_left = 0,
-  padding_right = 0,
-  icon = {
-    string = "󰁹",
-    color = colors.subtext0,
-    padding_left = 8,
-    padding_right = 3,
-    font = { family = settings.font.mono, style = "Semibold", size = 12.5 },
-  },
-  label = {
-    string = "--%",
-    color = colors.text,
-    width = 32,
-    align = "right",
-    padding_left = 0,
-    padding_right = 7,
-    font = { family = settings.font.mono, style = "Semibold", size = 10.5 },
-  },
+  position = "right", update_freq = 60, width = 62, align = "center", y_offset = 0, padding_left = 3, padding_right = 3,
+  background = { color = colors.surface0, corner_radius = 8, height = 24 },
+  icon = { string = "󰁹", color = colors.subtext0, width = 18, align = "center", padding_left = 0, padding_right = 0, y_offset = 0,
+    font = { family = settings.font.mono, style = "Regular", size = 15 } },
+  label = { string = "--%", color = colors.text, width = 30, align = "center",
+    padding_left = 0, padding_right = 0,
+    font = { family = settings.font.mono, style = "Semibold", size = 11 } },
+  popup = { align = "right", drawing = false,
+    background = { color = colors.base, border_color = colors.surface1, border_width = 1, corner_radius = 9 } },
+})
+local status_item = sbar.add("item", "widgets.battery.status", {
+  position = "popup.widgets.battery", width = 220, icon = { drawing = false },
+  background = { drawing = false },
+  label = { string = "读取电池状态…", color = colors.text, padding_left = 12, padding_right = 12,
+    font = { family = settings.font.text, style = "Semibold", size = 12 } },
+})
+local detail_item = sbar.add("item", "widgets.battery.detail", {
+  position = "popup.widgets.battery", width = 220, icon = { drawing = false },
+  background = { drawing = false },
+  label = { string = "", color = colors.subtext0, padding_left = 12, padding_right = 12,
+    font = { family = settings.font.text, style = "Regular", size = 11 } },
 })
 
 local function refresh()
   sbar.exec("pmset -g batt", function(output)
     local snapshot = battery_state.parse(output)
     if not snapshot.available then
-      battery:set({ drawing = false })
+      battery:set({ drawing = false, popup = { drawing = false } })
       return
     end
-
     local tone = battery_state.tone(snapshot)
     local color = colors.subtext0
-    if tone == "charging" then
-      color = colors.green
-    elseif tone == "critical" then
-      color = colors.red
-    end
-
-    battery:set({
-      drawing = true,
+    if tone == "charging" then color = colors.green
+    elseif tone == "critical" then color = colors.red
+    elseif tone == "full" then color = colors.lavender end
+    battery:set({ drawing = true,
       icon = { string = battery_state.icon(snapshot), color = color },
-      label = { string = string.format("%d%%", snapshot.charge), color = colors.text },
-    })
+      label = { string = string.format("%d%%", snapshot.charge), color = colors.text } })
+    status_item:set({ label = { string = battery_state.description(snapshot) } })
+    detail_item:set({ label = { string = battery_state.detail(snapshot) } })
   end)
 end
-
 battery:subscribe({ "forced", "routine", "power_source_change", "system_woke" }, refresh)
+battery:subscribe("mouse.clicked", function()
+  refresh()
+  battery:set({ popup = { drawing = "toggle" } })
+end)
+battery:subscribe("mouse.exited.global", function() battery:set({ popup = { drawing = false } }) end)
+refresh()
+
+require("theme_runtime").on_change(function()
+  battery:set({ background = { color = colors.surface0, border_color = colors.surface1 },
+    popup = { background = { color = colors.base, border_color = colors.surface1 } } })
+  status_item:set({ label = { color = colors.text } })
+  detail_item:set({ label = { color = colors.subtext0 } })
+  refresh()
+end)

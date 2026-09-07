@@ -10,7 +10,9 @@ local recording = sbar.add("item", "widgets.recording", {
   click_script = "open -a OBS",
 })
 
+local current = "off"
 local function render(state)
+  current = state
   local active = state == "recording"
   local ready = state == "ready"
   local color = active and colors.red or colors.overlay0
@@ -25,6 +27,7 @@ local function render(state)
       color = color,
     },
     background = {
+      color = colors.surface0,
       border_color = active and colors.red or colors.surface1,
     },
   })
@@ -37,3 +40,5 @@ local function refresh()
 end
 
 recording:subscribe({ "forced", "routine", "system_woke" }, refresh)
+
+require("theme_runtime").on_change(function() render(current) end)

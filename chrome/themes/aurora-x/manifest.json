@@ -1,0 +1,98 @@
+{
+  "manifest_version": 3,
+  "name": "Desktop Palette - Aurora X",
+  "version": "1.0.0",
+  "description": "Local color adaptation from the shared desktop palette. No scripts or website access.",
+  "theme": {
+    "colors": {
+      "frame": [
+        6,
+        7,
+        12
+      ],
+      "frame_inactive": [
+        7,
+        9,
+        15
+      ],
+      "toolbar": [
+        25,
+        29,
+        34
+      ],
+      "toolbar_text": [
+        238,
+        255,
+        255
+      ],
+      "toolbar_button_icon": [
+        134,
+        165,
+        255
+      ],
+      "tab_text": [
+        238,
+        255,
+        255
+      ],
+      "tab_background_text": [
+        180,
+        194,
+        195
+      ],
+      "tab_background_text_inactive": [
+        123,
+        141,
+        168
+      ],
+      "background_tab": [
+        6,
+        7,
+        12
+      ],
+      "background_tab_inactive": [
+        7,
+        9,
+        15
+      ],
+      "bookmark_text": [
+        238,
+        255,
+        255
+      ],
+      "omnibox_background": [
+        7,
+        9,
+        15
+      ],
+      "omnibox_text": [
+        238,
+        255,
+        255
+      ],
+      "ntp_background": [
+        7,
+        9,
+        15
+      ],
+      "ntp_text": [
+        238,
+        255,
+        255
+      ],
+      "ntp_link": [
+        134,
+        165,
+        255
+      ],
+      "ntp_header": [
+        49,
+        53,
+        58
+      ]
+    },
+    "properties": {
+      "ntp_logo_alternate": 1
+    }
+  }
+}

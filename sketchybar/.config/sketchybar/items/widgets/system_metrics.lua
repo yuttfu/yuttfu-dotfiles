@@ -193,3 +193,9 @@ end
 
 cpu:subscribe({ "forced", "routine", "system_woke" }, refresh)
 render()
+
+require("theme_runtime").on_change(function()
+  cpu_bracket:set({ background = meter_background() })
+  memory_bracket:set({ background = meter_background() })
+  render() -- Reuse cached measurements; do not push another graph sample.
+end)

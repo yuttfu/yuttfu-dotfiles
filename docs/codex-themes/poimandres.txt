@@ -1,0 +1,1 @@
+codex-theme-v1:{"codeThemeId":"nord","theme":{"accent":"#5de4c7","accentSource":"custom","contrast":60,"fonts":{"code":"MesloLGS NF","ui":null},"ink":"#e4f0fb","opaqueWindows":false,"semanticColors":{"diffAdded":"#5de4c7","diffRemoved":"#d0679d","skill":"#f087bd"},"surface":"#1b1e28"},"variant":"dark"}

@@ -53,7 +53,7 @@ check_links() {
   fi
 
   for package in "${PACKAGES[@]}"; do
-    output="$(stow --simulate --verbose=1 --dir "$ROOT" --target "$HOME" "$package" 2>&1)"
+    output="$(stow --no-folding --simulate --verbose=1 --dir "$ROOT" --target "$HOME" "$package" 2>&1)"
     status=$?
     if [[ "$status" -ne 0 ]]; then
       printf 'CONFLICT: package %s cannot be linked into %s\n' "$package" "$HOME" >&2
@@ -108,7 +108,7 @@ link_packages() {
   local package
 
   for package in "${PACKAGES[@]}"; do
-    stow --dir "$ROOT" --target "$HOME" "$package"
+    stow --no-folding --dir "$ROOT" --target "$HOME" "$package" || return 1
   done
 }
 
@@ -140,8 +140,8 @@ apply_links() {
     return 1
   fi
 
-  link_packages
-  link_codex_awake
+  link_packages || return 1
+  link_codex_awake || return 1
   printf 'APPLY OK: dotfiles linked\n'
 }
 

@@ -1,0 +1,98 @@
+{
+  "manifest_version": 3,
+  "name": "Desktop Palette - Catppuccin Mocha / Teal",
+  "version": "1.0.0",
+  "description": "Local color adaptation from the shared desktop palette. No scripts or website access.",
+  "theme": {
+    "colors": {
+      "frame": [
+        25,
+        25,
+        38
+      ],
+      "frame_inactive": [
+        24,
+        24,
+        37
+      ],
+      "toolbar": [
+        44,
+        45,
+        62
+      ],
+      "toolbar_text": [
+        205,
+        214,
+        244
+      ],
+      "toolbar_button_icon": [
+        148,
+        226,
+        213
+      ],
+      "tab_text": [
+        205,
+        214,
+        244
+      ],
+      "tab_background_text": [
+        161,
+        168,
+        194
+      ],
+      "tab_background_text_inactive": [
+        127,
+        132,
+        156
+      ],
+      "background_tab": [
+        25,
+        25,
+        38
+      ],
+      "background_tab_inactive": [
+        24,
+        24,
+        37
+      ],
+      "bookmark_text": [
+        205,
+        214,
+        244
+      ],
+      "omnibox_background": [
+        30,
+        30,
+        46
+      ],
+      "omnibox_text": [
+        205,
+        214,
+        244
+      ],
+      "ntp_background": [
+        30,
+        30,
+        46
+      ],
+      "ntp_text": [
+        205,
+        214,
+        244
+      ],
+      "ntp_link": [
+        148,
+        226,
+        213
+      ],
+      "ntp_header": [
+        62,
+        63,
+        82
+      ]
+    },
+    "properties": {
+      "ntp_logo_alternate": 1
+    }
+  }
+}

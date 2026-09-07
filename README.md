@@ -1,19 +1,41 @@
 # yuttfu dotfiles
 
-一套可迁移的 macOS 桌面环境：AeroSpace 管理窗口，SketchyBar 负责顶部状态栏，JankyBorders 标出当前窗口；Ghostty 和 Visual Studio Code 使用克制的玻璃透明效果。
+一套可迁移的 macOS 桌面环境：AeroSpace 管理窗口，SketchyBar 负责顶部状态栏，JankyBorders 为窗口绘制边框，Ghostty、状态栏与日历共用一套可切换色板。
 
-它只包含已经整理、验证过的配置；未完成的工具不会被迁移脚本安装或覆盖。
+使用 GNU Stow 管理配置链接，通过 `bootstrap.sh` 检查依赖、安装工具并恢复配置。
 
-## 专注计时器
+## 统一配色
 
-`FOCUS` 是面向学习的正计时器，不预设结束时间，让 ACM、AI 学习和长时间开发过程中始终有明确的时间感。点击顶部计时器会展开控制层。
+提供八套暗色适配：JellyFish、Aurora X、poimandres、Catppuccin Mocha / Teal、Outrun Night、Synthwave x Fluoromachine、Workbench / Dark Matter 和 Amethyst Dark。
 
-| 未开始 | 计时中 | 已暂停 |
-| --- | --- | --- |
-| ![专注计时器未开始](docs/assets/focus-idle.png) | ![专注计时器计时中](docs/assets/focus-running.png) | ![专注计时器已暂停](docs/assets/focus-paused.png) |
-| 灰色状态点，时间归零，可以开始新的专注记录。 | 绿色状态点，时间持续递增，主操作切换为暂停。 | 桃色状态点，保留累计时间，可以继续计时或复位。 |
+点击 SketchyBar 右侧主题按钮选择配色，或在终端运行：
 
-计时器会在系统睡眠前自动暂停，并把状态保存在本机；重新打开 SketchyBar 不会把休眠时间错误计入学习时长。
+```sh
+terminal-theme --list
+terminal-theme --current
+terminal-theme jellyfish
+```
+
+色板统一保存在 [`palettes.json`](zsh/.config/terminal-themes/palettes.json)，各软件按下表应用：
+
+| 软件 | 应用方式 |
+| --- | --- |
+| Ghostty | 生成终端色板后，按 `Command + Shift + ,` 重新加载。 |
+| Starship / fzf | 使用所在终端的 ANSI 色板；VS Code 集成终端跟随其 Profile。 |
+| SketchyBar / JankyBorders | 选择主题后即时换色，保留组件状态和监测曲线。 |
+| 本地日历 | 关闭面板后，下次打开时使用新配色。 |
+| Obsidian | 已登记的 Vault 启用 `desktop-current` CSS 片段后自动同步。 |
+| Codex | 手动导入对应主题文本。 |
+| Chrome | 在目标 Profile 中手动加载对应主题目录。 |
+| VS Code | 各 Profile 自行选择主题，保持相互独立。 |
+
+这些是基于原主题色板的个人适配，来源与适配说明保存在色板文件中。切换配色保留字体、透明度和快捷键。详见 [桌面与终端主题说明](docs/terminal-themes.md)。
+
+## 窗口与桌面
+
+JankyBorders 使用 **10px 圆角边框**：活动窗口显示主题强调色，其他窗口使用低亮度边框。AeroSpace 保留自动平铺和 1–9 号模拟工作区。
+
+macOS 原生 Spaces 的整组窗口滑动与 AeroSpace 工作区是两套机制。创建第二个桌面、使用 `Control + ←/→` 或触控板切换，以及与当前配置的使用边界，见 [Spaces 与 AeroSpace](docs/native-spaces.md)。
 
 ## 本地事件日历
 
@@ -36,25 +58,20 @@ $HOME/Library/Application Support/yuttfu-sketchybar/calendar-marks.json
 bash macos/yuttfu-calendar-panel/build-app.sh "$HOME/Applications/yuttfu Calendar.app"
 ```
 
-## SketchyBar 学习仪表台总览
+## SketchyBar
 
-![yuttfu SketchyBar 学习仪表台](docs/assets/sketchybar-overview.png)
-
-这条顶部栏围绕学习、开发和录制设计，使用 Catppuccin Mocha 配色、圆角半透明背景和刘海安全布局。所有常用信息都放在屏幕两侧，中间区域保持干净。
+这条顶部栏围绕学习、开发和录制设计，使用共享主题色、圆角半透明背景和刘海安全布局。所有常用信息都放在屏幕两侧，中间区域保持干净。
 
 | 区域 | 组件 | 作用 |
 | --- | --- | --- |
 | 左侧 | ` yuttfu` | 打开系统设置，也是整套配置的身份标记。 |
 | 左侧 | AeroSpace 工作区 | 显示 1–9 号工作区及其中的应用图标；点击数字即可切换。 |
 | 左侧 | 当前应用 | 实时显示正在使用的应用，录制时也能清楚交代上下文。 |
-| 右侧 | `FOCUS HH:MM:SS` | 面向学习的正计时器；点击后可以开始、暂停和复位。 |
+| 右侧 | `◈ 当前主题` | 展开八套主题列表，标记当前主题并显示切换状态。 |
 | 右侧 | CPU / RAM | 分开显示实时占用百分比和短曲线，高负载时才提高警示色。 |
 | 右侧 | OBS | 仅在录制相关状态下提示，避免忘记录制或误以为仍在录制。 |
-| 右侧 | 电池 | 正常状态保持低对比度，接电显示绿色闪电，低电量显示红色提醒。 |
+| 右侧 | 电池 | 电量分级图标，区分电池供电、充电、接电暂停与充满；点击查看详情。 |
 | 右侧 | 日期 / 时钟 | 日期打开本地事件月历，时钟保持固定宽度以避免界面跳动。 |
-
-> [!NOTE]
-> Ghostty 与 Zsh/Starship 已完成首轮整理；Zellij 和 Neovim 仍在规划中，后续会继续统一终端复用与编辑器体验，敬请期待。
 
 ## 在新 Mac 上恢复
 
@@ -79,9 +96,9 @@ bash macos/yuttfu-calendar-panel/build-app.sh "$HOME/Applications/yuttfu Calenda
 
 4. 首次启动 AeroSpace、SketchyBar 和 JankyBorders 时，按 macOS 的提示授予所需权限；AeroSpace 通常需要辅助功能权限。
 
-## 防止 Codex 工作时过快睡眠
+## 电源与长任务
 
-下面的电源档位已经按这台 Mac 的使用方式设计：接电时关闭系统自动睡眠但保留 30 分钟熄屏；电池时 10 分钟熄屏、15 分钟睡眠。先查看当前值：
+仓库提供可选电源档位：接电时关闭系统自动睡眠但保留 30 分钟熄屏；电池时 10 分钟熄屏、15 分钟睡眠。先查看当前值：
 
 ```bash
 ./macos/power.sh --check
@@ -109,7 +126,7 @@ codex-awake --minutes 180
 
 ## Ghostty 与 Visual Studio Code 透明效果
 
-Ghostty 的主题、字体和透明度由仓库中的配置直接控制。它使用 Catppuccin Mocha、MesloLGS NF、macOS regular glass 和 `0.72` 不透明度，让背景明显通透，同时通过原生模糊保持文字可读。
+Ghostty 的主题、字体和透明度由仓库中的配置直接控制。它使用共享终端色板、MesloLGS NF、macOS regular glass 和 `0.72` 不透明度，让背景明显通透，同时通过原生模糊保持文字可读。
 
 Visual Studio Code 底部集成终端固定为 `/bin/zsh` 登录 shell，使用 MesloLGS NF、14 号字与方块光标。shell、字体和布局等核心设置通过 `workbench.settings.applyToAllProfiles` 同步到所有 VS Code Profile，但不设置 `workbench.colorCustomizations`；终端颜色继承当前 Profile，Background 壁纸模拟透明效果不会被额外背景色遮挡。
 
@@ -117,7 +134,7 @@ Visual Studio Code 底部集成终端固定为 `/bin/zsh` 登录 shell，使用 
 
 ## Zsh 与 Starship
 
-Ghostty 和 VS Code 集成终端共用仓库中的原生 Zsh 配置，但使用两个同色系的 Starship 布局。Ghostty 保留完整 Catppuccin Powerline，按场景显示 Git、C/C++、Python、Node.js、Conda 和命令耗时；VS Code 底部终端自动切换到 `starship-vscode.toml`，只保留用户名、缩短目录、Git、Conda 和时间，避免在狭面板中拥挤。VS Code 中只要仓库存在未提交改动，就显示一个红色 `●`，仓库干净时隐藏；具体改动数量使用 `git status` 查看。
+Ghostty 和 VS Code 集成终端共用仓库中的原生 Zsh 配置，但使用两个跟随各自 ANSI 色板的 Starship 布局。Ghostty 使用两行 Powerline 提示符，常显用户名、主机名、完整目录、Shell 和时间，并按场景显示 Git、C/C++、Python、Node.js、Conda 和命令耗时；VS Code 底部终端自动切换到 `starship-vscode.toml`，只保留用户名、缩短目录、Git、Conda 和时间，避免在狭面板中拥挤。VS Code 中只要仓库存在未提交改动，就显示一个红色 `●`，仓库干净时隐藏；具体改动数量使用 `git status` 查看。
 
 Conda 的 `base` 自动激活已经关闭，Conda 也不会自行修改提示符。进入 AI 环境时手动执行：
 
@@ -129,6 +146,24 @@ Starship 会显示当前环境一次。私有代理、API 配置或仅当前机�
 
 当前 Mac 首次切换到仓库配置前，应先备份已有的 `.zshrc`、`.zprofile`、`.condarc` 和 `.config/starship.toml`。迁移后的文件由 Stow 链接，包括 VS Code 专用的 `.config/starship-vscode.toml`；新 Mac 执行正常的 `./bootstrap.sh --apply` 即可恢复。
 
+## Obsidian 配色
+
+在 [`obsidian-vaults.json`](zsh/.config/terminal-themes/obsidian-vaults.json) 登记 Vault 路径，切换一次桌面主题后，在 Obsidian 的“设置 → 外观 → CSS 代码片段”启用 `desktop-current`。默认路径指向 ACM Vault，迁移到其他机器时应按实际位置调整。
+
+适配针对深色模式与 AnuPpuccin，保留原有布局、字体和 Style Settings；关闭片段即可恢复原主题配色。详见 [Obsidian 配色说明](docs/terminal-themes.md#obsidian-配色)。
+
+## Codex 配色
+
+八套可导入文本保存在 [`docs/codex-themes/`](docs/codex-themes/)。例如复制 JellyFish：
+
+```sh
+terminal-theme jellyfish --codex | pbcopy
+```
+
+在 Codex 的 **Settings → Appearance → Dark theme → Import** 中粘贴导入。SketchyBar 按钮不自动修改 Codex 设置，详见 [Codex 配色指南](docs/codex-themes.md)。
+
 ## Google Chrome 配色
 
-Chrome 使用官方 Catppuccin Mocha 主题统一标签栏、地址栏和新标签页的基础颜色。主题安装需要在 Chrome 中手动确认，仓库不保存浏览记录、Cookie 或个人 Profile。主题链接、恢复方式和安全边界见 [Chrome 配色指南](chrome/README.md)。
+八套原生主题保存在 [`chrome/themes/`](chrome/themes/)，与桌面共用色板。进入目标 Chrome Profile 的 `chrome://extensions`，开启开发者模式，通过“加载未打包的扩展程序”选择主题文件夹；以后更换配色时手动加载另一套目录。
+
+主题仅调整浏览器界面与新标签页颜色，普通网页仍由网站自身主题控制。安装、切换、重新生成及恢复默认外观见 [Chrome 配色指南](chrome/README.md)。

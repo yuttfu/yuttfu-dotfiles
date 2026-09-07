@@ -1,7 +1,7 @@
 local colors = require("colors")
 local settings = require("settings")
 
-sbar.add("item", "apple.yuttfu", {
+local identity = sbar.add("item", "apple.yuttfu", {
   position = "left",
   icon = {
     string = "",
@@ -30,3 +30,8 @@ sbar.add("item", "apple.yuttfu.gap", {
   label = { drawing = false },
   background = { drawing = false },
 })
+
+require("theme_runtime").on_change(function()
+  identity:set({ icon = { color = colors.lavender }, label = { color = colors.text },
+    background = { color = colors.surface0, border_color = colors.with_alpha(colors.lavender, 0.55) } })
+end)

@@ -1,6 +1,7 @@
 local colors = require("colors")
 local settings = require("settings")
 
+local function apply()
 sbar.bar({
   position = "top",
   topmost = "window",
@@ -17,3 +18,7 @@ sbar.bar({
   padding_right = 6,
   shadow = true,
 })
+
+end
+apply()
+require("theme_runtime").on_change(apply)

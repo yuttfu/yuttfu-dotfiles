@@ -1,0 +1,1 @@
+codex-theme-v1:{"codeThemeId":"vscode-plus","theme":{"accent":"#00e1ff","accentSource":"custom","contrast":60,"fonts":{"code":"MesloLGS NF","ui":null},"ink":"#ffffff","opaqueWindows":false,"semanticColors":{"diffAdded":"#70d44b","diffRemoved":"#ff555a","skill":"#ed40a9"},"surface":"#001928"},"variant":"dark"}

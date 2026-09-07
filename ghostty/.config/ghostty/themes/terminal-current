@@ -1,0 +1,24 @@
+# Managed by terminal-theme; edit terminal-themes/palettes.json instead.
+# Theme: synthwave
+background = #200933
+foreground = #61e2ff
+cursor-color = #fc199a
+cursor-text = #200933
+selection-background = #49235c
+selection-foreground = #ffffff
+palette = 0=#200933
+palette = 1=#ff5370
+palette = 2=#51be72
+palette = 3=#ffcc00
+palette = 4=#9165f6
+palette = 5=#fc199a
+palette = 6=#61e2ff
+palette = 7=#b6b1b1
+palette = 8=#8a86b3
+palette = 9=#ff8aa0
+palette = 10=#8bdca2
+palette = 11=#ffe477
+palette = 12=#b497ff
+palette = 13=#ff79c5
+palette = 14=#b1efff
+palette = 15=#ffffff

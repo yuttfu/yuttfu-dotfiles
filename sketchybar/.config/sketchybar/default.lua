@@ -1,6 +1,7 @@
 local colors = require("colors")
 local settings = require("settings")
 
+local function apply()
 sbar.default({
   updates = "when_shown",
   padding_left = 3,
@@ -42,3 +43,7 @@ sbar.default({
     blur_radius = 20,
   },
 })
+
+end
+apply()
+require("theme_runtime").on_change(apply)

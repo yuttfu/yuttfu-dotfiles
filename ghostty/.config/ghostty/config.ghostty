@@ -1,5 +1,6 @@
 # Theme and typography
-theme = Catppuccin Mocha
+# Colors are generated from one palette; use terminal-theme to switch.
+config-file = themes/terminal-current
 font-family = MesloLGS NF
 font-size = 14
 

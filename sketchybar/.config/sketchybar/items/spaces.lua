@@ -3,6 +3,7 @@ local settings = require("settings")
 local app_icon = require("helpers.app_icons")
 
 local spaces = {}
+local cached_labels = {}
 local focused_workspace = settings.workspaces[1]
 
 local function trim(value)
@@ -29,10 +30,9 @@ local function app_labels(output)
   return table.concat(labels, " ")
 end
 
-local function refresh_space(workspace)
+local function render_space(workspace)
   local item = spaces[workspace]
-  sbar.exec("aerospace list-windows --workspace " .. workspace .. " --format '%{app-name}'", function(output)
-    local labels = app_labels(output)
+  local labels = cached_labels[workspace] or ""
     local occupied = labels ~= ""
     local focused = workspace == focused_workspace
 
@@ -52,6 +52,12 @@ local function refresh_space(workspace)
         border_color = focused and colors.lavender or colors.surface1,
       },
     })
+end
+
+local function refresh_space(workspace)
+  sbar.exec("aerospace list-windows --workspace " .. workspace .. " --format '%{app-name}'", function(output)
+    cached_labels[workspace] = app_labels(output)
+    render_space(workspace)
   end)
 end
 
@@ -97,4 +103,8 @@ end)
 
 sbar.exec("aerospace list-workspaces --focused --format '%{workspace}'", function(workspace)
   refresh_all(workspace)
+end)
+
+require("theme_runtime").on_change(function()
+  for _, workspace in ipairs(settings.workspaces) do render_space(workspace) end
 end)

@@ -21,7 +21,7 @@ local calendar = sbar.add("item", "widgets.calendar", {
   click_script = 'open "yuttfu-calendar://toggle"',
 })
 
-sbar.add("bracket", "widgets.datetime.bracket", {
+local datetime = sbar.add("bracket", "widgets.datetime.bracket", {
   "widgets.calendar",
   "widgets.clock",
 }, {
@@ -43,3 +43,9 @@ end
 
 calendar:subscribe({ "forced", "routine", "system_woke" }, refresh)
 refresh()
+
+require("theme_runtime").on_change(function()
+  calendar:set({ label = { color = colors.subtext0 } })
+  datetime:set({ background = { color = colors.with_alpha(colors.surface0, 0.72),
+    border_color = colors.with_alpha(colors.surface1, 0.58) } })
+end)

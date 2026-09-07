@@ -1,12 +1,13 @@
 "$schema" = "https://starship.rs/config-schema.json"
 
 format = """
-[](mauve)\
+[](cyan)\
 $os\
 $username\
-[](fg:mauve bg:peach)\
+$hostname\
+[](fg:cyan bg:magenta)\
 $directory\
-[](peach) \
+[](magenta) \
 $git_branch\
 $git_status\
 $c\
@@ -15,15 +16,19 @@ $python\
 $nodejs\
 $conda\
 $cmd_duration\
+$shell\
+$time\
+$status\
+$jobs\
 $line_break\
 $character"""
 
-palette = "catppuccin_mocha"
+# ANSI colors follow Ghostty or the active VS Code Profile.
 add_newline = false
 
 [os]
 disabled = false
-style = "fg:crust bg:mauve"
+style = "fg:black bg:cyan"
 format = "[$symbol]($style)"
 
 [os.symbols]
@@ -34,14 +39,15 @@ Ubuntu = "󰕈"
 
 [username]
 show_always = true
-style_user = "fg:crust bg:mauve"
-style_root = "fg:crust bg:red"
+style_user = "fg:black bg:cyan"
+style_root = "fg:black bg:red"
 format = "[ $user ]($style)"
 
 [directory]
-style = "fg:crust bg:peach"
+style = "fg:black bg:magenta"
 format = "[ $path ]($style)"
-truncation_length = 3
+truncation_length = 0
+truncate_to_repo = false
 truncation_symbol = "…/"
 
 [directory.substitutions]
@@ -53,37 +59,37 @@ truncation_symbol = "…/"
 
 [git_branch]
 symbol = ""
-style = "fg:crust bg:yellow"
+style = "fg:black bg:yellow"
 format = "[](yellow)[ $symbol $branch ]($style)[](yellow) "
 
 [git_status]
-style = "fg:crust bg:red"
+style = "fg:black bg:red"
 format = "[](red)[ $all_status$ahead_behind ]($style)[](red) "
 
 [c]
 symbol = ""
-style = "fg:crust bg:green"
+style = "fg:black bg:green"
 format = "[](green)[ $symbol $version ]($style)[](green) "
 
 [cpp]
 symbol = ""
-style = "fg:crust bg:green"
+style = "fg:black bg:green"
 format = "[](green)[ $symbol $version ]($style)[](green) "
 
 [python]
 symbol = ""
-style = "fg:crust bg:blue"
+style = "fg:black bg:blue"
 format = "[](blue)[ $symbol $version ]($style)[](blue) "
 
 [nodejs]
 symbol = ""
-style = "fg:crust bg:green"
+style = "fg:black bg:green"
 format = "[](green)[ $symbol $version ]($style)[](green) "
 
 [conda]
 symbol = ""
-style = "fg:crust bg:sapphire"
-format = "[](sapphire)[ $symbol $environment ]($style)[](sapphire) "
+style = "fg:black bg:blue"
+format = "[](blue)[ $symbol $environment ]($style)[](blue) "
 ignore_base = false
 
 [cmd_duration]
@@ -91,8 +97,8 @@ min_time = 2000
 show_milliseconds = false
 show_notifications = true
 min_time_to_notify = 45000
-style = "fg:crust bg:lavender"
-format = "[](lavender)[  $duration ]($style)[](lavender) "
+style = "fg:black bg:bright-blue"
+format = "[](bright-blue)[  $duration ]($style)[](bright-blue) "
 
 [line_break]
 disabled = false
@@ -101,34 +107,34 @@ disabled = false
 success_symbol = "[❯](bold green)"
 error_symbol = "[❯](bold red)"
 vimcmd_symbol = "[❮](bold green)"
-vimcmd_replace_one_symbol = "[❮](bold lavender)"
-vimcmd_replace_symbol = "[❮](bold lavender)"
+vimcmd_replace_one_symbol = "[❮](bold bright-blue)"
+vimcmd_replace_symbol = "[❮](bold bright-blue)"
 vimcmd_visual_symbol = "[❮](bold yellow)"
 
-[palettes.catppuccin_mocha]
-rosewater = "#f5e0dc"
-flamingo = "#f2cdcd"
-pink = "#f5c2e7"
-mauve = "#cba6f7"
-red = "#f38ba8"
-maroon = "#eba0ac"
-peach = "#fab387"
-yellow = "#f9e2af"
-green = "#a6e3a1"
-teal = "#94e2d5"
-sky = "#89dceb"
-sapphire = "#74c7ec"
-blue = "#89b4fa"
-lavender = "#b4befe"
-text = "#cdd6f4"
-subtext1 = "#bac2de"
-subtext0 = "#a6adc8"
-overlay2 = "#9399b2"
-overlay1 = "#7f849c"
-overlay0 = "#6c7086"
-surface2 = "#585b70"
-surface1 = "#45475a"
-surface0 = "#313244"
-base = "#1e1e2e"
-mantle = "#181825"
-crust = "#11111b"
+[hostname]
+ssh_only = false
+trim_at = "."
+style = "fg:black bg:cyan"
+format = "[@$hostname ]($style)"
+
+[shell]
+disabled = false
+style = "cyan"
+format = "[$indicator]($style) "
+
+[time]
+disabled = false
+time_format = "%H:%M:%S"
+style = "fg:black bg:cyan"
+format = "[](cyan)[  $time ]($style)[](cyan) "
+
+[status]
+disabled = false
+style = "bold red"
+format = "[✘ $status]($style) "
+
+[jobs]
+number_threshold = 1
+symbol_threshold = 1
+style = "bold yellow"
+format = "[⚙ $number]($style) "
