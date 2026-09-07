@@ -116,7 +116,7 @@ def main():
                 desktop["apply_bundle"](args.config_dir, outputs, settings)
                 print(f"Selected: {palettes[args.theme]['label']}")
                 if settings:
-                    print("VS Code: color theme shared across all Profiles.")
+                    print(f"VS Code: synchronized {len(settings)} settings files (default and Profiles).")
                 if not args.no_refresh:
                     desktop["refresh_desktop"](args.config_dir)
                 print("Ghostty: press Command+Shift+, to reload colors. Existing shells keep their processes.")

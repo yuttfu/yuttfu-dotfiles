@@ -55,7 +55,7 @@ def parse(text):
     return data, tokens, spans
 
 
-def render(text, theme):
+def render(text, theme, share=True):
     data, tokens, spans = parse(text)
     shared = data.get(SHARED, [])
     if not isinstance(shared, list) or not all(isinstance(v, str) for v in shared):
@@ -67,7 +67,7 @@ def render(text, theme):
             edits.append((tokens[a][1], tokens[b][2], json.dumps(theme)))
     else:
         additions[COLOR] = theme
-    if COLOR not in shared:
+    if share and COLOR not in shared:
         if SHARED in spans:
             a, b = spans[SHARED]
             # Add after the final element/comma, keeping comments and whitespace intact.
@@ -88,7 +88,9 @@ def render(text, theme):
     for a, b, replacement in sorted(edits, reverse=True):
         result = result[:a] + replacement + result[b:]
     actual, _, _ = parse(result)
-    expected = dict(data, **{COLOR: theme, SHARED: shared if COLOR in shared else shared + [COLOR]})
+    expected = dict(data, **{COLOR: theme})
+    if share:
+        expected[SHARED] = shared if COLOR in shared else shared + [COLOR]
     if actual != expected: raise ValueError("VS Code settings update failed validation")
     return result
 
@@ -108,6 +110,21 @@ def prepare(config_dir, name):
     target = target.resolve()
     if not target.is_file():
         raise ValueError("VS Code settings file is missing; configure terminal-themes/vscode.json")
-    # Preserve the original bytes as a precondition for the desktop transaction.
-    with target.open(newline='') as handle: before = handle.read()
-    return {target: (before, render(before, THEMES[name]))}
+    targets = {target: True}
+    if config.get('profiles') is not None:
+        if not isinstance(config['profiles'], str):
+            raise ValueError("VS Code profiles path must be a string")
+        profiles = Path(config['profiles']).expanduser()
+        if not profiles.is_absolute():
+            raise ValueError("VS Code profiles path must be absolute")
+        # Discover existing profile files on every selection, including new Profiles.
+        for path in sorted(profiles.glob('*/settings.json')):
+            resolved = path.resolve()
+            if not resolved.is_relative_to(profiles.resolve()):
+                raise ValueError("VS Code profile settings point outside the registered directory")
+            targets.setdefault(resolved, False)
+    updates = {}
+    for path, shared in targets.items():
+        with path.open(newline='') as handle: before = handle.read()
+        updates[path] = (before, render(before, THEMES[name], share=shared))
+    return updates

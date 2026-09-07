@@ -4,7 +4,7 @@
 
 ## 切换
 
-点击 SketchyBar 右侧 **◈ 当前主题**，展开列表选择主题。菜单显示各主题的强调色色块和当前选中项，选中当前项不会重复执行；切换时显示进度与失败反馈。SketchyBar 通过事件局部换色，保留原有组件、CPU/内存曲线和采样节奏；Borders 即时换色；Ghostty 需要下面的重载快捷键，日历在关闭后下一次打开时更新。
+点击 SketchyBar 右侧 **◈ 当前主题**，展开列表选择主题。菜单显示各主题的强调色色块和当前选中项，选中当前项会重新同步各应用；切换时显示进度与失败反馈。SketchyBar 通过事件局部换色，保留原有组件、CPU/内存曲线和采样节奏；Borders 即时换色；Ghostty 需要下面的重载快捷键，日历在关闭后下一次打开时更新。
 
 ```sh
 terminal-theme --list
@@ -83,9 +83,9 @@ Mac 与 Windows 的终端配色可以使用同一套 ANSI 设计，但这个切�
 | `dark-matter` | `Dark Matter (by Particle)` |
 | `amethyst-dark` | `Amethyst Dark` |
 
-启用 `terminal-themes/vscode.json` 后，`terminal-theme <ID>` 与 SketchyBar 按钮都会同步 VS Code。脚本只更新登记的默认 `settings.json` 中的 `workbench.colorTheme`，并向 `workbench.settings.applyToAllProfiles` 追加该设置名。VS Code 负责向现有与新建 Profile 应用共享值，不逐个改写 Profile 文件。
+启用 `terminal-themes/vscode.json` 后，`terminal-theme <ID>` 与 SketchyBar 按钮都会同步 VS Code。脚本更新登记的默认 `settings.json` 中的 `workbench.colorTheme`，并向 `workbench.settings.applyToAllProfiles` 追加该设置名。保留默认共享项供新 Profile 继承，并同时扫描登记的 `profiles` 目录，逐个更新已有 Profile 的 `workbench.colorTheme`，触发各窗口的文件监听；这些文件的其他字段保持原样。新 Profile 在下次切换时自动加入。
 
-支持 JSONC 注释、尾逗号和 Stow 链接；保留其他字段及原有共享项。写入前检查文件是否已被修改，避免覆盖并行编辑。VS Code 设置与其他主题文件一起保存，保存失败时回滚。`--preview`、`--list`、`--current` 与 `--codex` 均不改写 VS Code；`--no-refresh` 会保存设置，已打开的 VS Code 仍可能因文件监听而立即换色。
+再次点击已选中的主题也会重新同步，可恢复手动更改后的配色。支持 JSONC 注释、尾逗号和默认设置的 Stow 链接；保留其他字段及原有共享项。写入前检查文件是否已被修改，避免覆盖并行编辑。VS Code 设置与其他主题文件一起保存，保存失败时回滚。`--preview`、`--list`、`--current` 与 `--codex` 均不改写 VS Code；`--no-refresh` 会保存设置，已打开的 VS Code 仍可能因文件监听而立即换色。
 
 新 Mac 上执行 bootstrap 会安装 `vscode/extensions.txt` 中的主题扩展；多 Profile 使用时，将这些扩展设为“应用扩展到所有配置文件”。找不到对应扩展、Profile 中将其禁用、工作区主题覆盖、自动深浅模式或主题专属颜色覆盖，都可能影响最终显示。脚本保留这些个性化设置，不强制重置。Catppuccin 沿用各 Profile 的 accent/workbench 配置；Synthwave 仅切主题，不执行额外发光或应用资源补丁。
 

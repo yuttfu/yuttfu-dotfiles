@@ -1,4 +1,5 @@
 {
   "enabled": true,
-  "settings": "~/Library/Application Support/Code/User/settings.json"
+  "settings": "~/Library/Application Support/Code/User/settings.json",
+  "profiles": "~/Library/Application Support/Code/User/profiles"
 }

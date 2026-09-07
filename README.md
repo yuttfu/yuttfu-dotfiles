@@ -154,7 +154,7 @@ Starship 会显示当前环境一次。私有代理、API 配置或仅当前机�
 
 ## VS Code 自动跟随
 
-八套主题扩展可通过扩展面板的“应用扩展到所有配置文件”共享。主题按钮更新默认 `settings.json` 中的 `workbench.colorTheme`，并将该项加入 `workbench.settings.applyToAllProfiles`。因此现有与新建 Profile 都使用同一主题，各自的插件、快捷键和编辑器设置继续独立。
+八套主题扩展可通过扩展面板的“应用扩展到所有配置文件”共享。主题按钮更新默认 `settings.json` 中的 `workbench.colorTheme`，并将该项加入 `workbench.settings.applyToAllProfiles`。同时扫描已登记的 Profile 目录，将各份 `settings.json` 的 `workbench.colorTheme` 同步为同一个值，触发各窗口的配置更新。各自的插件、快捷键和其他设置继续独立；新建 Profile 会在下次切换时自动纳入。再次点击当前主题也会重新同步。
 
 路径与开关保存在 [`vscode.json`](zsh/.config/terminal-themes/vscode.json)。设为 `"enabled": false` 后，主题按钮停止更新 VS Code；如果还希望各 Profile 分别选颜色，在 VS Code 设置中取消 Color Theme 的“应用设置到所有配置文件”。工作区显式指定的主题仍按 VS Code 的设置优先级处理。
 

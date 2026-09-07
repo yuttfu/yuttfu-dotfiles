@@ -24,7 +24,6 @@ local footer
 local function choose(id)
   if busy then return end
   picker:set({ popup = { drawing = false } })
-  if id == theme.id then return end
   busy = true
   picker:set({ icon = { string = "…" }, label = { string = "切换中…" } })
   sbar.exec('"$HOME/.local/bin/terminal-theme" ' .. id, function(_, exit_code)
