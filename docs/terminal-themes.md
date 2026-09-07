@@ -1,6 +1,6 @@
 # 终端主题
 
-提供八套暗色主题，统一 Ghostty、Starship、fzf、SketchyBar、JankyBorders、独立日历与 Obsidian 配色。AeroSpace 工作区机制保持现状。
+提供八套暗色主题，统一 Ghostty、Starship、fzf、SketchyBar、JankyBorders、独立日历、Obsidian 与 VS Code 配色。AeroSpace 工作区机制保持现状。
 
 ## 切换
 
@@ -32,19 +32,19 @@ terminal-theme mocha-teal
 - `borders/.config/borders/theme-colors.sh`
 - `zsh/.config/terminal-themes/calendar.json`
 
-主题切换只写颜色，不改字体、透明度或快捷键。它先检查全部输出的托管标记，再逐文件原子替换；写入失败时回滚已完成的文件，保留 Stow 链接。全部保存后才刷新桌面。`--no-refresh` 只生成文件，用于检查和离线部署。桌面文字采用中性亮色，强调色来自 ANSI 青色或各主题的 `desktop_accent`。窗口使用 10px 圆角边框，未激活窗口也使用不透明的低亮度边框。
+主题切换只写颜色，不改字体、透明度或快捷键。生成文件先检查托管标记，VS Code 设置只更新指定字段，再逐文件原子替换；写入失败时回滚已完成的文件，保留 Stow 链接。全部保存后才刷新桌面。`--no-refresh` 只生成文件，用于检查和离线部署。桌面文字采用中性亮色，强调色来自 ANSI 青色或各主题的 `desktop_accent`。窗口使用 10px 圆角边框，未激活窗口也使用不透明的低亮度边框。
 
 日历 app 更新后首次使用需退出旧进程再打开；以后只切配色不用重启日历。打开中的事件编辑界面会保留当前配色，关闭后再打开才切换。
 
 原始 VS Code 主题不一定提供完整终端色板，因此这些是基于原主题的终端适配，不是官方移植版。JellyFish 保留 `#00002c` 编辑器底色、`#ff92a5` 终端文字及 `#00f7ff` 光标色；ANSI 缺项从其语法/UI 色补齐。ANSI 红、绿保留错误/成功含义。Synthwave 只迁移颜色，不加入发光 CSS。
 
-## 各 Profile 的独立性
+## 终端与 Profile
 
 Ghostty 的完整 Starship 显示系统、用户名、主机名、完整目录、Shell 和时间；Git、语言环境、超过两秒的命令耗时、非零退出码、后台任务按实际情况出现。它仍使用两行结构，第二行的 `❯` 是输入位置；家目录以 `~` 表示。VS Code 保留紧凑布局。两者使用终端 ANSI 颜色，不写固定十六进制配色。fzf 与补全提示也遵循终端色板。因此：
 
 - Ghostty 使用 `terminal-theme` 选中的颜色。
-- VS Code 集成终端使用当前 Profile 的主题颜色；切换 Ghostty 主题不会修改 VS Code Profile。
-- 配色脚本不修改 VS Code 的设置、扩展或 Profile 关联。
+- VS Code 集成终端使用当前共享主题的终端色板。
+- VS Code 仅共享 Color Theme，其他 Profile 设置与关联保持独立。
 
 Mac 与 Windows 的终端配色可以使用同一套 ANSI 设计，但这个切换脚本当前是 macOS/Linux 的本地文件工具，不直接配置 Windows Terminal。
 
@@ -67,3 +67,28 @@ Mac 与 Windows 的终端配色可以使用同一套 ANSI 设计，但这个切�
 ## 原生桌面滑动
 
 见 [Spaces 与 AeroSpace 的使用边界](native-spaces.md)。仓库工作区按钮使用 AeroSpace 的模拟工作区。
+
+## VS Code 自动配色
+
+`vscode.py` 将桌面主题 ID 映射到 VS Code 扩展提供的主题名：
+
+| 桌面 ID | VS Code Color Theme |
+| --- | --- |
+| `jellyfish` | `JellyFish` |
+| `aurora-x` | `Aurora X` |
+| `poimandres` | `poimandres` |
+| `mocha-teal` | `Catppuccin Mocha` |
+| `outrun-night` | `Outrun Night` |
+| `synthwave` | `Synthwave x Fluoromachine` |
+| `dark-matter` | `Dark Matter (by Particle)` |
+| `amethyst-dark` | `Amethyst Dark` |
+
+启用 `terminal-themes/vscode.json` 后，`terminal-theme <ID>` 与 SketchyBar 按钮都会同步 VS Code。脚本只更新登记的默认 `settings.json` 中的 `workbench.colorTheme`，并向 `workbench.settings.applyToAllProfiles` 追加该设置名。VS Code 负责向现有与新建 Profile 应用共享值，不逐个改写 Profile 文件。
+
+支持 JSONC 注释、尾逗号和 Stow 链接；保留其他字段及原有共享项。写入前检查文件是否已被修改，避免覆盖并行编辑。VS Code 设置与其他主题文件一起保存，保存失败时回滚。`--preview`、`--list`、`--current` 与 `--codex` 均不改写 VS Code；`--no-refresh` 会保存设置，已打开的 VS Code 仍可能因文件监听而立即换色。
+
+新 Mac 上执行 bootstrap 会安装 `vscode/extensions.txt` 中的主题扩展；多 Profile 使用时，将这些扩展设为“应用扩展到所有配置文件”。找不到对应扩展、Profile 中将其禁用、工作区主题覆盖、自动深浅模式或主题专属颜色覆盖，都可能影响最终显示。脚本保留这些个性化设置，不强制重置。Catppuccin 沿用各 Profile 的 accent/workbench 配置；Synthwave 仅切主题，不执行额外发光或应用资源补丁。
+
+关闭联动：将 `vscode.json` 中 `enabled` 设为 `false`。恢复各 Profile 独立选色：另外在 VS Code 设置中取消 Color Theme 的“应用设置到所有配置文件”。
+
+参考：[VS Code 跨 Profile 共享设置](https://code.visualstudio.com/docs/configure/profiles#apply-a-setting-to-all-profiles)。

@@ -21,13 +21,13 @@ terminal-theme jellyfish
 | 软件 | 应用方式 |
 | --- | --- |
 | Ghostty | 生成终端色板后，按 `Command + Shift + ,` 重新加载。 |
-| Starship / fzf | 使用所在终端的 ANSI 色板；VS Code 集成终端跟随其 Profile。 |
+| Starship / fzf | 使用所在终端的 ANSI 色板；VS Code 集成终端跟随共享主题。 |
 | SketchyBar / JankyBorders | 选择主题后即时换色，保留组件状态和监测曲线。 |
 | 本地日历 | 关闭面板后，下次打开时使用新配色。 |
 | Obsidian | 已登记的 Vault 启用 `desktop-current` CSS 片段后自动同步。 |
 | Codex | 手动导入对应主题文本。 |
 | Chrome | 在目标 Profile 中手动加载对应主题目录。 |
-| VS Code | 各 Profile 自行选择主题，保持相互独立。 |
+| VS Code | 自动切换共享的 Color Theme；各 Profile 的其他设置保持独立。 |
 
 这些是基于原主题色板的个人适配，来源与适配说明保存在色板文件中。切换配色保留字体、透明度和快捷键。详见 [桌面与终端主题说明](docs/terminal-themes.md)。
 
@@ -128,7 +128,7 @@ codex-awake --minutes 180
 
 Ghostty 的主题、字体和透明度由仓库中的配置直接控制。它使用共享终端色板、MesloLGS NF、macOS regular glass 和 `0.72` 不透明度，让背景明显通透，同时通过原生模糊保持文字可读。
 
-Visual Studio Code 底部集成终端固定为 `/bin/zsh` 登录 shell，使用 MesloLGS NF、14 号字与方块光标。shell、字体和布局等核心设置通过 `workbench.settings.applyToAllProfiles` 同步到所有 VS Code Profile，但不设置 `workbench.colorCustomizations`；终端颜色继承当前 Profile，Background 壁纸模拟透明效果不会被额外背景色遮挡。
+Visual Studio Code 底部集成终端固定为 `/bin/zsh` 登录 shell，使用 MesloLGS NF、14 号字与方块光标。shell、字体和布局等核心设置通过 `workbench.settings.applyToAllProfiles` 同步到所有 VS Code Profile，但不设置 `workbench.colorCustomizations`；终端颜色继承 VS Code 当前共享主题，Background 壁纸模拟透明效果不会被额外背景色遮挡。
 
 由于它会改动 VS Code 的应用资源，玻璃效果必须在 VS Code 内手动确认：安装完成后打开命令面板，运行 **Vibrancy Continued: Enable Vibrancy**。VS Code 更新后若效果失效，再运行 **Vibrancy Continued: Reload Vibrancy**。这是刻意保留的显式操作，避免迁移脚本静默修改应用包。
 
@@ -151,6 +151,14 @@ Starship 会显示当前环境一次。私有代理、API 配置或仅当前机�
 在 [`obsidian-vaults.json`](zsh/.config/terminal-themes/obsidian-vaults.json) 登记 Vault 路径，切换一次桌面主题后，在 Obsidian 的“设置 → 外观 → CSS 代码片段”启用 `desktop-current`。默认路径指向 ACM Vault，迁移到其他机器时应按实际位置调整。
 
 适配针对深色模式与 AnuPpuccin，保留原有布局、字体和 Style Settings；关闭片段即可恢复原主题配色。详见 [Obsidian 配色说明](docs/terminal-themes.md#obsidian-配色)。
+
+## VS Code 自动跟随
+
+八套主题扩展可通过扩展面板的“应用扩展到所有配置文件”共享。主题按钮更新默认 `settings.json` 中的 `workbench.colorTheme`，并将该项加入 `workbench.settings.applyToAllProfiles`。因此现有与新建 Profile 都使用同一主题，各自的插件、快捷键和编辑器设置继续独立。
+
+路径与开关保存在 [`vscode.json`](zsh/.config/terminal-themes/vscode.json)。设为 `"enabled": false` 后，主题按钮停止更新 VS Code；如果还希望各 Profile 分别选颜色，在 VS Code 设置中取消 Color Theme 的“应用设置到所有配置文件”。工作区显式指定的主题仍按 VS Code 的设置优先级处理。
+
+主题名称映射及实现说明见 [VS Code 自动配色](docs/terminal-themes.md#vs-code-自动配色)。
 
 ## Codex 配色
 

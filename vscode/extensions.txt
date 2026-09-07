@@ -1,2 +1,9 @@
 illixion.vscode-vibrancy-continued
 Catppuccin.catppuccin-vsc
+amodio.amethyst-theme
+marqu3s.aurora-x
+PawelBorkar.jellyfish
+pmndrs.pmndrs
+samrapdev.outrun
+webrender.synthwave-x-fluoromachine
+particle.particle-vscode-theme

@@ -5,6 +5,7 @@ import os
 import runpy
 from pathlib import Path
 import shutil
+import stat
 import subprocess
 import tempfile
 
@@ -73,32 +74,46 @@ def atomic_write(target, content):
             handle.write(content)
             handle.flush()
             os.fsync(handle.fileno())
-        os.chmod(temporary, 0o644)
+        os.chmod(temporary, stat.S_IMODE(target.stat().st_mode) if target.exists() else 0o644)
         os.replace(temporary, target)
     finally:
         if os.path.exists(temporary):
             os.unlink(temporary)
 
 
-def apply_bundle(config_dir, outputs):
+def read_exact(target):
+    with target.open(newline="") as handle:
+        return handle.read()
+
+
+def apply_bundle(config_dir, outputs, settings=None):
+    settings = settings or {}
+    if outputs.keys() & settings.keys():
+        raise ValueError("VS Code settings collide with a generated theme file")
+    outputs = {**outputs, **{path: update[1] for path, update in settings.items()}}
     lock_dir = (config_dir / "terminal-themes").resolve()
     lock_dir.mkdir(parents=True, exist_ok=True)
     with (lock_dir / ".theme.lock").open("a") as lock:
         fcntl.flock(lock, fcntl.LOCK_EX)
         before = {}
         for target in outputs:
-            before[target] = target.read_text() if target.exists() else None
-            if before[target] is not None and not is_managed(before[target]):
+            before[target] = read_exact(target) if target.exists() else None
+            if target in settings:
+                if before[target] != settings[target][0]:
+                    raise ValueError("VS Code settings changed; retry theme selection")
+            elif before[target] is not None and not is_managed(before[target]):
                 raise ValueError(f"Refusing to overwrite an unmanaged file: {target}")
         written = []
         try:
             for target, content in outputs.items():
                 if before[target] == content:
                     continue
+                if target in settings and read_exact(target) != before[target]:
+                    raise ValueError("VS Code settings changed; retry theme selection")
                 target.parent.mkdir(parents=True, exist_ok=True)
                 atomic_write(target, content)
                 written.append(target)
-        except OSError:
+        except (OSError, ValueError):
             for target in reversed(written):
                 if before[target] is None:
                     target.unlink()

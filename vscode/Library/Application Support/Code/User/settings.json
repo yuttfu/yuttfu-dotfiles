@@ -1,5 +1,5 @@
 {
-  "workbench.colorTheme": "Catppuccin Mocha",
+  "workbench.colorTheme": "Synthwave x Fluoromachine",
   "catppuccin.accentColor": "mauve",
   "catppuccin.workbenchMode": "minimal",
   "window.titleBarStyle": "custom",
@@ -35,7 +35,7 @@
     "terminal.integrated.drawBoldTextInBrightColors",
     "terminal.integrated.gpuAcceleration",
     "terminal.integrated.shellIntegration.enabled",
-    "terminal.integrated.smoothScrolling"
+    "terminal.integrated.smoothScrolling", "workbench.colorTheme"
   ],
   "deepseek.lang": "cn",
   "vscode_vibrancy.type": "under-window",

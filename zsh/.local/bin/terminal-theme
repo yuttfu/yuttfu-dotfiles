@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Select a shared Ghostty, SketchyBar, Borders, calendar and Obsidian palette."""
+"""Select a shared Ghostty, SketchyBar, Borders, calendar, Obsidian and VS Code palette."""
 
 import argparse
 import fcntl
@@ -111,8 +111,12 @@ def main():
             else:
                 desktop = runpy.run_path(str(args.config_dir / "terminal-themes/desktop.py"))
                 outputs = desktop["bundle"](args.config_dir, args.theme, palettes[args.theme], palettes, content)
-                desktop["apply_bundle"](args.config_dir, outputs)
+                vscode = runpy.run_path(str(args.config_dir / "terminal-themes/vscode.py"))
+                settings = vscode["prepare"](args.config_dir, args.theme)
+                desktop["apply_bundle"](args.config_dir, outputs, settings)
                 print(f"Selected: {palettes[args.theme]['label']}")
+                if settings:
+                    print("VS Code: color theme shared across all Profiles.")
                 if not args.no_refresh:
                     desktop["refresh_desktop"](args.config_dir)
                 print("Ghostty: press Command+Shift+, to reload colors. Existing shells keep their processes.")

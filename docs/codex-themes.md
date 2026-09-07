@@ -28,7 +28,7 @@
 
 界面色由这套配置控制；代码语法高亮使用 Codex 内置的相近主题，因此不是八款 VS Code 扩展逐个 token 的完整移植。选择内置代码主题可能同时重置界面配色，要恢复整套适配请重新导入。
 
-顶部主题按钮目前同步 SketchyBar、Borders、Ghostty 配置、日历和已接入的 Obsidian Vault；不会自动更改 Codex 当前设置。`terminal-theme <ID> --codex` 随时从唯一色板生成最新导入文本，不修改任何应用或系统剪贴板；上面的 `| pbcopy` 由你主动执行时才复制。
+顶部主题按钮目前同步 SketchyBar、Borders、Ghostty 配置、日历、已接入的 Obsidian Vault 与 VS Code 共享主题；不会自动更改 Codex 当前设置。`terminal-theme <ID> --codex` 随时从唯一色板生成最新导入文本，不修改任何应用或系统剪贴板；上面的 `| pbcopy` 由你主动执行时才复制。
 
 官方功能说明：[Appearance 设置](https://learn.chatgpt.com/docs/reference/settings#appearance)。
 
