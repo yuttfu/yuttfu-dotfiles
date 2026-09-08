@@ -5,7 +5,7 @@ local battery_state = require("items.widgets.battery_state")
 local battery = sbar.add("item", "widgets.battery", {
   position = "right", update_freq = 60, width = 64, y_offset = 0, padding_left = 0, padding_right = 0,
   background = { color = colors.surface0, corner_radius = settings.item.corner_radius, height = settings.item.height },
-  icon = { string = "󰁹", color = colors.subtext0, width = 28, align = "left", padding_left = 8, padding_right = 4, y_offset = 0,
+  icon = { string = "󰁹", color = colors.subtext0, width = 28, align = "left", padding_left = 14, padding_right = 4, y_offset = 0,
     font = { family = settings.font.mono, style = "Semibold", size = 12.5 } },
   label = { string = "--%", color = colors.text, width = 36, align = "right",
     padding_left = 0, padding_right = 8,

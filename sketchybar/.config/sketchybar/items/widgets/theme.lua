@@ -7,7 +7,7 @@ local rows = {}
 
 local picker = sbar.add("item", "widgets.theme", {
   position = "right", width = 120, y_offset = 0,
-  icon = { string = "◈", color = colors.lavender, width = 28, align = "left", padding_left = 8, padding_right = 4,
+  icon = { string = "◈", color = colors.lavender, width = 28, align = "left", padding_left = 14, padding_right = 4,
     font = { family = settings.font.mono, style = "Semibold", size = 12.5 } },
   label = { string = theme.label, color = colors.text, width = 92, align = "center", padding_left = 0,
     font = { family = settings.font.text, style = "Medium", size = 11 }, padding_right = 8 },
