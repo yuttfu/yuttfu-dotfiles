@@ -6,11 +6,12 @@ local busy = false
 local rows = {}
 
 local picker = sbar.add("item", "widgets.theme", {
-  position = "right", width = 96, align = "center", y_offset = 0,
-  icon = { string = "◈", color = colors.lavender, width = 18, align = "center", padding_left = 0, padding_right = 0 },
-  label = { string = theme.label, color = colors.text, align = "center", padding_left = 4,
-    font = { family = settings.font.text, style = "Medium", size = 11 }, padding_right = 0 },
-  background = { color = colors.surface0, border_color = colors.surface1, height = 26, corner_radius = 9 },
+  position = "right", width = 120, y_offset = 0,
+  icon = { string = "◈", color = colors.lavender, width = 28, align = "left", padding_left = 8, padding_right = 4,
+    font = { family = settings.font.mono, style = "Semibold", size = 12.5 } },
+  label = { string = theme.label, color = colors.text, width = 92, align = "center", padding_left = 0,
+    font = { family = settings.font.text, style = "Medium", size = 11 }, padding_right = 8 },
+  background = { color = colors.surface0, border_color = colors.surface1, height = settings.item.height, corner_radius = settings.item.corner_radius },
   popup = { align = "right", drawing = false },
 })
 local heading = sbar.add("item", "widgets.theme.heading", {

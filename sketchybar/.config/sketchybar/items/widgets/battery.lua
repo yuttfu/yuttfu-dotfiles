@@ -3,15 +3,21 @@ local settings = require("settings")
 local battery_state = require("items.widgets.battery_state")
 
 local battery = sbar.add("item", "widgets.battery", {
-  position = "right", update_freq = 60, width = 62, align = "center", y_offset = 0, padding_left = 3, padding_right = 3,
-  background = { color = colors.surface0, corner_radius = 8, height = 24 },
-  icon = { string = "󰁹", color = colors.subtext0, width = 18, align = "center", padding_left = 0, padding_right = 0, y_offset = 0,
-    font = { family = settings.font.mono, style = "Regular", size = 15 } },
-  label = { string = "--%", color = colors.text, width = 30, align = "center",
-    padding_left = 0, padding_right = 0,
-    font = { family = settings.font.mono, style = "Semibold", size = 11 } },
+  position = "right", update_freq = 60, width = 64, y_offset = 0, padding_left = 0, padding_right = 0,
+  background = { color = colors.surface0, corner_radius = settings.item.corner_radius, height = settings.item.height },
+  icon = { string = "󰁹", color = colors.subtext0, width = 28, align = "left", padding_left = 8, padding_right = 4, y_offset = 0,
+    font = { family = settings.font.mono, style = "Semibold", size = 12.5 } },
+  label = { string = "--%", color = colors.text, width = 36, align = "right",
+    padding_left = 0, padding_right = 8,
+    font = { family = settings.font.mono, style = "Semibold", size = 10.5 } },
   popup = { align = "right", drawing = false,
     background = { color = colors.base, border_color = colors.surface1, border_width = 1, corner_radius = 9 } },
+})
+sbar.add("item", "widgets.battery.gap", {
+  position = "right", width = settings.item.group_gap,
+  padding_left = 0, padding_right = 0,
+  icon = { drawing = false }, label = { drawing = false },
+  background = { drawing = false },
 })
 local status_item = sbar.add("item", "widgets.battery.status", {
   position = "popup.widgets.battery", width = 220, icon = { drawing = false },
