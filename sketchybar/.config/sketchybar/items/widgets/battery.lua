@@ -2,13 +2,20 @@ local colors = require("colors")
 local settings = require("settings")
 local battery_state = require("items.widgets.battery_state")
 
+sbar.add("item", "widgets.battery.calendar_gap", {
+  position = "right", width = 12,
+  padding_left = 0, padding_right = 0,
+  icon = { drawing = false }, label = { drawing = false },
+  background = { drawing = false },
+})
+
 local battery = sbar.add("item", "widgets.battery", {
   position = "right", update_freq = 60, width = 64, y_offset = 0, padding_left = 0, padding_right = 0,
   background = { color = colors.surface0, corner_radius = settings.item.corner_radius, height = settings.item.height },
   icon = { string = "󰁹", color = colors.subtext0, width = 28, align = "left", padding_left = 14, padding_right = 4, y_offset = 0,
     font = { family = settings.font.mono, style = "Semibold", size = 12.5 } },
   label = { string = "--%", color = colors.text, width = 36, align = "right",
-    padding_left = 0, padding_right = 8,
+    padding_left = 0, padding_right = 12,
     font = { family = settings.font.mono, style = "Semibold", size = 10.5 } },
   popup = { align = "right", drawing = false,
     background = { color = colors.base, border_color = colors.surface1, border_width = 1, corner_radius = 9 } },
