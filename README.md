@@ -162,10 +162,10 @@ Starship 会显示当前环境一次。私有代理、API 配置或仅当前机�
 
 ## Codex 配色
 
-八套可导入文本保存在 [`docs/codex-themes/`](docs/codex-themes/)。例如复制 JellyFish：
+顶部主题菜单提供 **复制 Codex 当前配色**，点击即可复制当前桌面主题的导入文本。八套文本也保存在 [`docs/codex-themes/`](docs/codex-themes/)。终端操作：
 
 ```sh
-terminal-theme jellyfish --codex | pbcopy
+terminal-theme --copy-codex
 ```
 
 在 Codex 的 **Settings → Appearance → Dark theme → Import** 中粘贴导入。SketchyBar 按钮不自动修改 Codex 设置，详见 [Codex 配色指南](docs/codex-themes.md)。

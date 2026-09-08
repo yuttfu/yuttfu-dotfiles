@@ -62,6 +62,34 @@ for _, option in ipairs(theme.themes) do
     row:set({ background = { color = option.id == theme.id and colors.surface0 or colors.base } })
   end)
 end
+local codex_copy = sbar.add("item", "widgets.theme.codex_copy", {
+  position = "popup.widgets.theme", width = 238,
+  icon = { string = "⧉", color = colors.lavender, width = 24, align = "center", padding_left = 8 },
+  label = { string = "复制 Codex 当前配色", color = colors.text, padding_right = 10,
+    font = { family = settings.font.text, style = "Medium", size = 11 } },
+  background = { drawing = true, color = colors.surface0, corner_radius = 6 },
+})
+codex_copy:subscribe("mouse.clicked", function()
+  if busy then return end
+  busy = true
+  codex_copy:set({ label = { string = "正在复制…", color = colors.subtext0 } })
+  sbar.exec('"$HOME/.local/bin/terminal-theme" --copy-codex', function(_, exit_code)
+    busy = false
+    if exit_code == 0 then
+      codex_copy:set({ label = { string = "已复制 Codex 配色", color = colors.green } })
+      footer:set({ label = { string = "Codex → Appearance → Import" } })
+    else
+      codex_copy:set({ label = { string = "复制失败，点击重试", color = colors.red } })
+      footer:set({ label = { string = "请检查 terminal-theme --copy-codex" } })
+    end
+  end)
+end)
+codex_copy:subscribe("mouse.entered", function()
+  codex_copy:set({ background = { color = colors.surface1 } })
+end)
+codex_copy:subscribe("mouse.exited", function()
+  codex_copy:set({ background = { color = colors.surface0 } })
+end)
 footer = sbar.add("item", "widgets.theme.footer", {
   position = "popup.widgets.theme", width = 238,
   icon = { drawing = false }, background = { drawing = false },
@@ -69,7 +97,10 @@ footer = sbar.add("item", "widgets.theme.footer", {
     font = { family = settings.font.text, style = "Regular", size = 10 } },
 })
 picker:subscribe("mouse.clicked", function()
-  if not busy then picker:set({ popup = { drawing = "toggle" } }) end
+  if not busy then
+    codex_copy:set({ label = { string = "复制 Codex 当前配色", color = colors.text } })
+    picker:set({ popup = { drawing = "toggle" } })
+  end
 end)
 picker:subscribe("mouse.exited.global", function()
   picker:set({ popup = { drawing = false } })
@@ -80,6 +111,9 @@ runtime.on_change(function(updated)
     label = { string = theme.label, color = colors.text },
     background = { color = colors.surface0, border_color = colors.surface1 },
     popup = { background = { color = colors.with_alpha(colors.mantle, 0.96), border_color = colors.surface1 } } })
+  codex_copy:set({ icon = { color = colors.lavender },
+    label = { string = "复制 Codex 当前配色", color = colors.text },
+    background = { color = colors.surface0 } })
   heading:set({ label = { color = colors.subtext0 } })
   footer:set({ label = { color = colors.subtext0 } })
   for _, option in ipairs(updated.themes) do

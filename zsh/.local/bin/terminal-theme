@@ -78,6 +78,7 @@ def main():
     group.add_argument("--current", action="store_true")
     group.add_argument("--preview", action="store_true", help="Print config without changing files")
     group.add_argument("--codex", action="store_true", help="Print a Codex import string without changing apps")
+    group.add_argument("--copy-codex", action="store_true", help="Copy a Codex import string; defaults to the current theme")
     parser.add_argument("--config-dir", type=Path,
                         default=Path(os.environ.get("XDG_CONFIG_HOME", str(Path.home() / ".config"))))
     parser.add_argument("--no-refresh", action="store_true", help="Generate files without refreshing desktop apps")
@@ -91,6 +92,11 @@ def main():
     try:
         palettes = load_palettes(args.config_dir)
         target = managed_target(args.config_dir)
+        if args.copy_codex and not args.theme:
+            match = re.search(r"^# Theme: ([a-z0-9-]+)$", target.read_text(), re.MULTILINE)
+            if not match:
+                raise ValueError("The active file has no managed theme identifier")
+            args.theme = match.group(1)
         if args.current:
             match = re.search(r"^# Theme: ([a-z0-9-]+)$", target.read_text(), re.MULTILINE)
             if not match:
@@ -103,9 +109,15 @@ def main():
             if args.theme not in palettes:
                 parser.error("Unknown theme; run terminal-theme --list")
             content = render(args.theme, palettes[args.theme])
-            if args.codex:
+            if args.codex or args.copy_codex:
                 exporter = runpy.run_path(str(args.config_dir / "terminal-themes/codex.py"))
-                print(exporter["render"](args.theme, palettes[args.theme]))
+                exported = exporter["render"](args.theme, palettes[args.theme])
+                if args.copy_codex:
+                    subprocess.run(["/usr/bin/pbcopy"], input=exported, text=True,
+                                   check=True, timeout=5)
+                    print(f"Copied Codex theme: {palettes[args.theme]['label']}")
+                else:
+                    print(exported)
             elif args.preview:
                 print(content, end="")
             else:
@@ -120,7 +132,7 @@ def main():
                 if not args.no_refresh:
                     desktop["refresh_desktop"](args.config_dir)
                 print("Ghostty: press Command+Shift+, to reload colors. Existing shells keep their processes.")
-    except (OSError, ValueError, KeyError, TypeError, subprocess.TimeoutExpired) as error:
+    except (OSError, ValueError, KeyError, TypeError, subprocess.TimeoutExpired, subprocess.CalledProcessError) as error:
         parser.exit(1, f"terminal-theme: {error}\n")
 
 

@@ -62,7 +62,7 @@ Mac 与 Windows 的终端配色可以使用同一套 ANSI 设计，但这个切�
 
 ## Codex 配色
 
-八套适配导入文件和操作说明见 [Codex 配色](codex-themes.md)。运行 `terminal-theme jellyfish --codex` 只输出对应的导入文本，不改变当前桌面或 Codex 设置。
+顶部主题菜单中的 **复制 Codex 当前配色** 会把当前主题的导入文本复制到剪贴板，并显示成功或失败；随后在 Codex 的 Appearance → Dark theme → Import 粘贴。也可执行 `terminal-theme --copy-codex`。八套适配导入文件和操作说明见 [Codex 配色](codex-themes.md)。运行 `terminal-theme jellyfish --codex` 只输出对应的导入文本，不改变当前桌面或 Codex 设置。
 
 ## 原生桌面滑动
 
